@@ -17,41 +17,41 @@ public class Scanner {
 
 
     public Scanner(String fileName) {
-	curFileName = fileName;
-	indents.push(0);
+		curFileName = fileName;
+		indents.push(0);
 
-	try {
-	    sourceFile = new LineNumberReader(
-			    new InputStreamReader(
-				new FileInputStream(fileName),
-				"UTF-8"));
-	} catch (IOException e) {
-	    scannerError("Cannot read " + fileName + "!");
-	}
+		try {
+			sourceFile = new LineNumberReader(
+					new InputStreamReader(
+					new FileInputStream(fileName),
+					"UTF-8"));
+		} catch (IOException e) {
+			scannerError("Cannot read " + fileName + "!");
+		}
     }
 
 
     private void scannerError(String message) {
-	String m = "Asp scanner error";
-	if (curLineNum() > 0)
-	    m += " on line " + curLineNum();
-	m += ": " + message;
+		String m = "Asp scanner error";
+		if (curLineNum() > 0)
+			m += " on line " + curLineNum();
+		m += ": " + message;
 
-	Main.error(m);
+		Main.error(m);
     }
 
 
     public Token curToken() {
-	while (curLineTokens.isEmpty()) {
-	    readNextLine();
-	}
-	return curLineTokens.get(0);
+		while (curLineTokens.isEmpty()) {
+			readNextLine();
+		}
+		return curLineTokens.get(0);
     }
 
 
     public void readNextToken() {
-	if (! curLineTokens.isEmpty())
-	    curLineTokens.remove(0);
+		if (! curLineTokens.isEmpty())
+			curLineTokens.remove(0);
     }
 
 
@@ -84,14 +84,14 @@ public class Scanner {
     }
 
     public int curLineNum() {
-	return sourceFile!=null ? sourceFile.getLineNumber() : 0;
+		return sourceFile!=null ? sourceFile.getLineNumber() : 0;
     }
 
     private int findIndent(String s) {
-	int indent = 0;
+		int indent = 0;
 
-	while (indent<s.length() && s.charAt(indent)==' ') indent++;
-	return indent;
+		while (indent<s.length() && s.charAt(indent)==' ') indent++;
+		return indent;
     }
 
     private String expandLeadingTabs(String s) {
@@ -118,48 +118,48 @@ public class Scanner {
 
 
     private boolean isLetterAZ(char c) {
-	return ('A'<=c && c<='Z') || ('a'<=c && c<='z') || (c=='_');
+		return ('A'<=c && c<='Z') || ('a'<=c && c<='z') || (c=='_');
     }
 
 
     private boolean isDigit(char c) {
-	return '0'<=c && c<='9';
+		return '0'<=c && c<='9';
     }
 
 
     public boolean isCompOpr() {
-	TokenKind k = curToken().kind;
-	//-- Must be changed in part 2:
-	return false;
+		TokenKind k = curToken().kind;
+		//-- Must be changed in part 2:
+		return false;
     }
 
 
     public boolean isFactorPrefix() {
-	TokenKind k = curToken().kind;
-	//-- Must be changed in part 2:
-	return false;
+		TokenKind k = curToken().kind;
+		//-- Must be changed in part 2:
+		return false;
     }
 
 
     public boolean isFactorOpr() {
-	TokenKind k = curToken().kind;
-	//-- Must be changed in part 2:
-	return false;
+		TokenKind k = curToken().kind;
+		//-- Must be changed in part 2:
+		return false;
     }
 	
 
     public boolean isTermOpr() {
-	TokenKind k = curToken().kind;
-	//-- Must be changed in part 2:
-	return false;
+		TokenKind k = curToken().kind;
+		//-- Must be changed in part 2:
+		return false;
     }
 
 
     public boolean anyEqualToken() {
-	for (Token t: curLineTokens) {
-	    if (t.kind == equalToken) return true;
-	    if (t.kind == semicolonToken) return false;
-	}
-	return false;
+		for (Token t: curLineTokens) {
+			if (t.kind == equalToken) return true;
+			if (t.kind == semicolonToken) return false;
+		}
+		return false;
     }
 }
