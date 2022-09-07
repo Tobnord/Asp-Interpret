@@ -75,6 +75,7 @@ public class Scanner {
 
 	//-- Must be changed in part 1:
 	expandLeadingTabs(line);
+	
 
 	// Terminate line:
 	curLineTokens.add(new Token(newLineToken,curLineNum()));
@@ -95,25 +96,35 @@ public class Scanner {
     }
 
     private String expandLeadingTabs(String s) {
-	//-- Must be changed in part 1:
-	System.out.println("ExpandLeadingTabs current input = " + s);
-	int n = 0;
-	int m = 0;
-	for (int i = 0; i < s.length(); i++) {
-		System.out.println("ExpandLeadingTabs current char" + s.charAt(i));
-		if (s.charAt(i) == ' '){
-			n++;
+		//-- Must be changed in part 1:
+		System.out.println("ExpandLeadingTabs current input = " + s);
+		int n = 0;
+		int m = 0;
+		String newString = s;
+		for (int i = 0; i < s.length(); i++) {
+			m = 0;
+			if (s.charAt(i) == ' ') {
+				n++;
+			}
+			else if (s.charAt(i) == '\t') {
+				m = 4 - (n % 4);
+				newString = newString.substring(0, i) + newString.substring(i, newString.length());
+				n += m;
+				
+				String spaces = "";
+				for (int j = 0; j < m; j++) {
+					spaces += " ";
+				}
+				newString = spaces + newString;
+			}
+			else {
+				return newString;
+			}
 		}
-		else if (s.charAt(i) == '\t');{
-			m = 4 - (n % 4);
-			n += m;
-		}
-		if(s.charAt(i) != ' ' || s.charAt(i) != '\t'){
-			return s;
-		}
-	}
-	System.out.println("ExpandLeadingTabs n-value: " + n);
-	return s;
+		System.out.println("ExpandLeadingTabs n-value: " + n);
+		System.out.println(s);
+		System.out.println(newString);
+		return s;
 	}
 
 
