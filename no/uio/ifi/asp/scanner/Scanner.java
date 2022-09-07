@@ -74,6 +74,7 @@ public class Scanner {
 	}
 
 	//-- Must be changed in part 1:
+	expandLeadingTabs(line);
 
 	// Terminate line:
 	curLineTokens.add(new Token(newLineToken,curLineNum()));
@@ -95,8 +96,25 @@ public class Scanner {
 
     private String expandLeadingTabs(String s) {
 	//-- Must be changed in part 1:
-	return null;
-    }
+	System.out.println("ExpandLeadingTabs current input = " + s);
+	int n = 0;
+	int m = 0;
+	for (int i = 0; i < s.length(); i++) {
+		System.out.println("ExpandLeadingTabs current char" + s.charAt(i));
+		if (s.charAt(i) == ' '){
+			n++;
+		}
+		else if (s.charAt(i) == '\t');{
+			m = 4 - (n % 4);
+			n += m;
+		}
+		if(s.charAt(i) != ' ' || s.charAt(i) != '\t'){
+			return s;
+		}
+	}
+	System.out.println("ExpandLeadingTabs n-value: " + n);
+	return s;
+	}
 
 
     private boolean isLetterAZ(char c) {
