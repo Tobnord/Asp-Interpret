@@ -97,34 +97,48 @@ public class Scanner {
 
     private String expandLeadingTabs(String s) {
 		//-- Must be changed in part 1:
-		System.out.println("ExpandLeadingTabs current input = " + s);
+		// System.out.println("ExpandLeadingTabs current input = " + s); CLEAN
+		if (s == null){
+			System.out.println("HENNING");
+			return "E-o-f";
+		}
+
 		int n = 0;
 		int m = 0;
-		String newString = s;
+		String newString = "";
+
 		for (int i = 0; i < s.length(); i++) {
+			newString = "";
 			m = 0;
 			if (s.charAt(i) == ' ') {
 				n++;
 			}
 			else if (s.charAt(i) == '\t') {
 				m = 4 - (n % 4);
-				newString = newString.substring(0, i) + newString.substring(i, newString.length());
 				n += m;
-				
+
 				String spaces = "";
 				for (int j = 0; j < m; j++) {
 					spaces += " ";
 				}
+
+				char[] chars = s.toCharArray();
+
+				for (int j = 0; j < chars.length; j++) {
+					if (j != chars[i]){
+						newString += chars[j];
+					}
+				}
+
+				// System.out.println(newString); CLEAN
 				newString = spaces + newString;
 			}
 			else {
-				return newString;
+				break;
 			}
 		}
-		System.out.println("ExpandLeadingTabs n-value: " + n);
-		System.out.println(s);
-		System.out.println(newString);
-		return s;
+		// System.out.println("ExpandLeadingTabs n-value: " + n); CLEAN
+		return newString;
 	}
 
 
