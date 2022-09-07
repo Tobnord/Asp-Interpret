@@ -104,11 +104,11 @@ public enum TokenKind {
     String image;
 
     TokenKind(String s) {
-	image = s;
+	    image = s;
     }
 
     @Override
     public String toString() {
-	return image;
+	    return image;
     }
 }
