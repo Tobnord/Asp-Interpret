@@ -13,38 +13,38 @@ public enum TokenKind {
 
     // Keywords (including those used in Python 3):
     andToken("and"),
-    asToken("as"),              // Not used in Asp
-    assertToken("assert"),      // Not used in Asp
-    breakToken("break"),        // Not used in Asp
-    classToken("class"),        // Not used in Asp
-    continueToken("continue"),  // Not used in Asp
+    asToken("as"), // Not used in Asp
+    assertToken("assert"), // Not used in Asp
+    breakToken("break"), // Not used in Asp
+    classToken("class"), // Not used in Asp
+    continueToken("continue"), // Not used in Asp
     defToken("def"),
-    delToken("del"),            // Not used in Asp
+    delToken("del"), // Not used in Asp
     elifToken("elif"),
     elseToken("else"),
-    exceptToken("except"),      // Not used in Asp
+    exceptToken("except"), // Not used in Asp
     falseToken("False"),
-    finallyToken("finally"),    // Not used in Asp
+    finallyToken("finally"), // Not used in Asp
     forToken("for"),
-    fromToken("from"),          // Not used in Asp
+    fromToken("from"), // Not used in Asp
     globalToken("global"),
     ifToken("if"),
-    importToken("import"),      // Not used in Asp
+    importToken("import"), // Not used in Asp
     inToken("in"),
-    isToken("is"),              // Not used in Asp
-    lambdaToken("lambda"),      // Not used in Asp
+    isToken("is"), // Not used in Asp
+    lambdaToken("lambda"), // Not used in Asp
     noneToken("None"),
-    nonlocalToken("nonlocal"),  // Not used in Asp
+    nonlocalToken("nonlocal"), // Not used in Asp
     notToken("not"),
     orToken("or"),
     passToken("pass"),
-    raiseToken("raise"),        // Not used in Asp
+    raiseToken("raise"), // Not used in Asp
     returnToken("return"),
     trueToken("True"),
-    tryToken("try"),            // Not used in Asp
+    tryToken("try"), // Not used in Asp
     whileToken("while"),
-    withToken("with"),          // Not used in Asp
-    yieldToken("yield"),        // Not used in Asp
+    withToken("with"), // Not used in Asp
+    yieldToken("yield"), // Not used in Asp
 
     // Operators:
     // (Python 3 operators are indicated in case anyone
@@ -104,11 +104,11 @@ public enum TokenKind {
     String image;
 
     TokenKind(String s) {
-	    image = s;
+        image = s;
     }
 
     @Override
     public String toString() {
-	    return image;
+        return image;
     }
 }
