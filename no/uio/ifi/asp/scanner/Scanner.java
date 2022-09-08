@@ -81,6 +81,7 @@ public class Scanner {
 
 	private void indentHandling(String s) {
 		String currentString = s;
+		System.out.println("|" + s + "|");
 		if (s == null) {
 			while (indents.peek() > 0) {
 				indents.pop();
@@ -99,6 +100,7 @@ public class Scanner {
 			// System.out.println(s2); // CLEAN
 
 			if(s2.isBlank()) {
+				System.out.println("-- comment");
 				return;
 			}
 			else {
