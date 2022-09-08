@@ -69,13 +69,60 @@ public class Scanner {
 		}
 
 		// -- Must be changed in part 1:
-		expandLeadingTabs(line);
+		String expandedLeadingTabsString = expandLeadingTabs(line);
+		indentHandling(expandedLeadingTabsString);
 
 		// Terminate line:
 		curLineTokens.add(new Token(newLineToken, curLineNum()));
 
 		for (Token t : curLineTokens)
 			Main.log.noteToken(t);
+	}
+
+	private void indentHandling(String s) {
+		String currentString = s;
+		if (s == null) {
+			while (indents.peek() > 0) {
+				indents.pop();
+				curLineTokens.add(new Token(dedentToken, curLineNum()));
+				System.out.println("EOF madafakka");
+			}
+			return;
+		}
+
+		if (s.isBlank()) {
+			System.out.println("-- blank");
+			return;
+		}
+		else if (s.contains("#")) {
+			String s2 = s.substring(0, s.indexOf("#"));
+			// System.out.println(s2); // CLEAN
+
+			if(s2.isBlank()) {
+				return;
+			}
+			else {
+				currentString = s2;
+				System.out.println("-- code before comment");
+			}
+		}
+
+		int n = findIndent(currentString);
+		System.out.println("-- find indent:" + n); // CLEAN
+
+		if (n > indents.peek()) {
+			indents.push(n);
+			curLineTokens.add(new Token(indentToken, curLineNum()));
+		}
+		else if (n < indents.peek()) {
+			indents.pop();
+			curLineTokens.add(new Token(dedentToken, curLineNum()));
+		}
+
+		if (n != indents.peek()) {
+			// System.out.println("Indent failiure");
+			scannerError("Indent failiure");
+		}
 	}
 
 	public int curLineNum() {
@@ -92,10 +139,7 @@ public class Scanner {
 
 	private String expandLeadingTabs(String s) {
 		// -- Must be changed in part 1:
-		// System.out.println("ExpandLeadingTabs current input = " + s); CLEAN
-		if (s == null) {
-			return "E-o-f";
-		}
+		// System.out.println("ExpandLeadingTabs current input = " + s); // CLEAN
 
 		int n = 0;
 		int m = 0;
@@ -106,7 +150,8 @@ public class Scanner {
 			m = 0;
 			if (s.charAt(i) == ' ') {
 				n++;
-			} else if (s.charAt(i) == '\t') {
+			}
+			else if (s.charAt(i) == '\t') {
 				m = 4 - (n % 4);
 				n += m;
 
@@ -119,14 +164,15 @@ public class Scanner {
 
 				for (int j = 0; j < chars.length; j++) {
 					if (j != chars[i]) {
-						newString += chars[j];
+						newString = newString + chars[j];
 					}
 				}
 
 				// System.out.println(newString); CLEAN
 				newString = spaces + newString;
-			} else {
-				break;
+			}
+			else {
+				newString = s;
 			}
 		}
 		// System.out.println("ExpandLeadingTabs n-value: " + n); CLEAN
