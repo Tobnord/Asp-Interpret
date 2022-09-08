@@ -71,6 +71,7 @@ public class Scanner {
 		// -- Must be changed in part 1:
 		String expandedLeadingTabsString = expandLeadingTabs(line);
 		indentHandling(expandedLeadingTabsString);
+		createTokens(expandedLeadingTabsString);
 
 		// Terminate line:
 		curLineTokens.add(new Token(newLineToken, curLineNum()));
@@ -79,6 +80,332 @@ public class Scanner {
 			Main.log.noteToken(t);
 	}
 
+
+	private void createTokens(String s) {
+		// List words delimited by whitespace
+		String[] strArr = s.split("\\s+");
+		
+		// Loop through words in array
+		for (String word : strArr) {
+
+			// List chars in word
+			char[] chars = s.toCharArray();
+			
+			// Loop through chars in word
+			String currentWord = "";
+			for (int i = 0; i < chars.length; i++) {
+				char c = chars[i];
+				
+				if (isLetterAZ(c) || isDigit(c)) {
+					currentWord += c;
+				}
+				else{
+					createKeywordTokens(currentWord);
+					createLiteralTokens(currentWord);
+					createNameTokens(currentWord);
+					currentWord = "";
+				}
+
+				// Creating operator tokens
+				switch (c) {
+					case '*':
+						curLineTokens.add(new Token(TokenKind.astToken));
+						break;
+
+					case '>':
+						if (chars[i+1] == '=') {
+							i++;
+							curLineTokens.add(new Token(TokenKind.greaterEqualToken));
+						}
+						else {
+							curLineTokens.add(new Token(TokenKind.greaterToken));
+						}
+						break;
+
+					case '<':
+						if (chars[i+1] == '=') {
+							i++;
+							curLineTokens.add(new Token(TokenKind.lessEqualToken));
+						}
+						else {
+							curLineTokens.add(new Token(TokenKind.lessToken));
+						}
+						break;
+
+					case '-':
+						curLineTokens.add(new Token(TokenKind.minusToken));
+						break;
+
+					case '+':
+						curLineTokens.add(new Token(TokenKind.plusToken));
+						break;
+
+					case '!':
+						if (chars[i+1] == '=') {
+							i++;
+							curLineTokens.add(new Token(TokenKind.notEqualToken));
+						}
+						break;
+
+					case '/':
+						if (chars[i+1] == '/') {
+							curLineTokens.add(new Token(TokenKind.doubleSlashToken));
+						}
+						else {
+							curLineTokens.add(new Token(TokenKind.slashToken));
+						}
+						break;
+
+					case ':':
+						curLineTokens.add(new Token(TokenKind.colonToken));
+						break;
+
+					case ',':
+						curLineTokens.add(new Token(TokenKind.commaToken));
+						break;
+
+					case '=':
+						if (chars[i+1] == '=') {
+							curLineTokens.add(new Token(TokenKind.doubleEqualToken));
+							i++;
+						}
+						if (chars[i-1] == '!') {
+							curLineTokens.add(new Token(TokenKind.notEqualToken));
+						}
+						if (chars[i+1] == '>') {
+							i++;
+							curLineTokens.add(new Token(TokenKind.greaterEqualToken));
+						}
+						if (chars[i+1] == '<') {
+							i++;
+							curLineTokens.add(new Token(TokenKind.lessEqualToken));
+						}
+						else {
+							curLineTokens.add(new Token(TokenKind.equalToken));
+						}
+						break;
+
+					case '{':
+						curLineTokens.add(new Token(TokenKind.leftBraceToken));
+						break;
+
+					case '[':
+						curLineTokens.add(new Token(TokenKind.leftBracketToken));
+						break;
+
+					case '(':
+						curLineTokens.add(new Token(TokenKind.leftParToken));
+						break;
+
+					case '}':
+						curLineTokens.add(new Token(TokenKind.rightBraceToken));
+						break;
+
+					case ']':
+						curLineTokens.add(new Token(TokenKind.rightBracketToken));
+						break;
+
+					case ')':
+						curLineTokens.add(new Token(TokenKind.rightParToken));
+						break;
+
+					case ';':
+						curLineTokens.add(new Token(TokenKind.semicolonToken));
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	}
+
+	private void createLiteralTokens(String s) {
+		if (isStringFloat(s)) {
+			curLineTokens.add(new Token(TokenKind.floatToken));
+		}
+		else if (isStringInt(s)) {
+			curLineTokens.add(new Token(TokenKind.integerToken));
+		}
+		
+	}
+
+	private void createKeywordTokens(String s) {
+		String[] keywords = {
+			"and", "as", "assert", "break", "class",
+			"continue", "def", "del", "elif", "else",
+			"except", "False", "finally", "for", "from",
+			"global", "if", "import", "in", "is", "lambda",
+			"None", "nonlocal", "not", "or", "pass", "raise",
+			"return", "True", "try", "while", "with", "yield"
+		};
+
+		switch (s) {
+			case "and":
+				curLineTokens.add(new Token(TokenKind.semicolonToken));
+				break;
+
+			case "as":
+				curLineTokens.add(new Token(TokenKind.semicolonToken));
+				break;
+
+			case "assert":
+				curLineTokens.add(new Token(TokenKind.assertToken));
+				break;
+
+			case "break":
+				curLineTokens.add(new Token(TokenKind.breakToken));
+				break;
+
+			case "class":
+				curLineTokens.add(new Token(TokenKind.classToken));
+				break;
+
+			case "continue":
+				curLineTokens.add(new Token(TokenKind.continueToken));
+				break;
+
+			case "def":
+				curLineTokens.add(new Token(TokenKind.defToken));
+				break;
+
+			case "del":
+				curLineTokens.add(new Token(TokenKind.delToken));
+				break;
+
+			case "elif":
+				curLineTokens.add(new Token(TokenKind.elifToken));
+				break;
+				
+			case "else":
+				curLineTokens.add(new Token(TokenKind.elseToken));
+				break;
+
+			case "except":
+				curLineTokens.add(new Token(TokenKind.exceptToken));
+				break;
+
+			case "False":
+				curLineTokens.add(new Token(TokenKind.falseToken));
+				break;
+
+			case "finally":
+				curLineTokens.add(new Token(TokenKind.finallyToken));
+				break;
+
+			case "for":
+				curLineTokens.add(new Token(TokenKind.forToken));
+				break;
+
+			case "from":
+				curLineTokens.add(new Token(TokenKind.fromToken));
+				break;
+
+			case "global":
+				curLineTokens.add(new Token(TokenKind.globalToken));
+				break;
+
+			case "if":
+				curLineTokens.add(new Token(TokenKind.ifToken));
+				break;
+
+			case "import":
+				curLineTokens.add(new Token(TokenKind.ifToken));
+				break;
+
+			case "in":
+				curLineTokens.add(new Token(TokenKind.inToken));
+				break;
+
+			case "is":
+				curLineTokens.add(new Token(TokenKind.isToken));
+				break;
+
+			case "lambda":
+				curLineTokens.add(new Token(TokenKind.lambdaToken));
+				break;
+
+			case "None":
+				curLineTokens.add(new Token(TokenKind.noneToken));
+				break;
+
+			case "nonlocal":
+				curLineTokens.add(new Token(TokenKind.nonlocalToken));
+				break;
+
+			case "not":
+				curLineTokens.add(new Token(TokenKind.notToken));
+				break;
+
+			case "or":
+				curLineTokens.add(new Token(TokenKind.orToken));
+				break;
+
+			case "pass":
+				curLineTokens.add(new Token(TokenKind.passToken));
+				break;
+
+			case "raise":
+				curLineTokens.add(new Token(TokenKind.raiseToken));
+				break;
+
+			case "return":
+				curLineTokens.add(new Token(TokenKind.returnToken));
+				break;
+
+			case "true":
+				curLineTokens.add(new Token(TokenKind.trueToken));
+				break;
+
+			case "try":
+				curLineTokens.add(new Token(TokenKind.tryToken));
+				break;
+				
+			case "while":
+				curLineTokens.add(new Token(TokenKind.whileToken));
+				break;
+
+			case "with":
+				curLineTokens.add(new Token(TokenKind.withToken));
+				break;
+				
+			case "yield":
+				curLineTokens.add(new Token(TokenKind.yieldToken));
+				break;
+
+			default:
+				// for (String string : keywords) {
+				// 	if (s.contains(string)) {
+				// 		Main.error("Name contains reserved keyword.");
+				// 	}
+				// }
+				
+				break;
+		}
+	}
+
+	private void createNameTokens(String s) {
+		
+	}
+
+	private boolean isStringInt(String s) {
+		try {
+			Integer.parseInt(s);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean isStringFloat(String s) {
+		try {
+			Float.parseFloat(s);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
+				
+
 	private void indentHandling(String s) {
 		String currentString = s;
 		System.out.println("|" + s + "|");
@@ -86,8 +413,8 @@ public class Scanner {
 			while (indents.peek() > 0) {
 				indents.pop();
 				curLineTokens.add(new Token(dedentToken, curLineNum()));
-				System.out.println("EOF madafakka");
 			}
+			curLineTokens.add(new Token(eofToken, curLineNum()));
 			return;
 		}
 
@@ -141,8 +468,6 @@ public class Scanner {
 
 	private String expandLeadingTabs(String s) {
 		// -- Must be changed in part 1:
-		// System.out.println("ExpandLeadingTabs current input = " + s); // CLEAN
-
 		int n = 0;
 		int m = 0;
 		String newString = "";
@@ -170,14 +495,12 @@ public class Scanner {
 					}
 				}
 
-				// System.out.println(newString); CLEAN
 				newString = spaces + newString;
 			}
 			else {
 				newString = s;
 			}
 		}
-		// System.out.println("ExpandLeadingTabs n-value: " + n); CLEAN
 		return newString;
 	}
 
