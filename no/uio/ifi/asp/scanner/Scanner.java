@@ -125,7 +125,6 @@ public class Scanner {
 
 				if (!stringLitUnderConstruction) {
 					i += createOperatorTokens(chars, i);
-					continue;
 				}
 
 				if (chars[i] == '\"' && !stringLitUnderConstruction 
