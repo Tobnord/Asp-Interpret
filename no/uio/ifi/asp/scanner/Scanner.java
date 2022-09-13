@@ -80,143 +80,198 @@ public class Scanner {
 			Main.log.noteToken(t);
 	}
 
-
 	private void createTokens(String s) {
+
+		if(s.isEmpty()) {
+			return;
+		}
+
+
+
 		// List words delimited by whitespace
 		String[] strArr = s.split("\\s+");
-		
+
 		// Loop through words in array
 		for (String word : strArr) {
-
 			// List chars in word
-			char[] chars = s.toCharArray();
-			
+			char[] chars = word.toCharArray();
+
+			boolean containsDot = false;
+			boolean justNumbers = true;
+			String stringLit = "";
+			boolean stringLitUnderConstruction = false;
+
+			if (TokenKind.contains(word)) {
+				createKeywordTokens(word);
+				continue;
+			}
+
+			if (word.contains(".")) {
+				containsDot = true;
+			}
+
 			// Loop through chars in word
-			String currentWord = "";
 			for (int i = 0; i < chars.length; i++) {
-				char c = chars[i];
-				
-				if (isLetterAZ(c) || isDigit(c)) {
-					currentWord += c;
-				}
-				else{
-					createKeywordTokens(currentWord);
-					createLiteralTokens(currentWord);
-					createNameTokens(currentWord);
-					currentWord = "";
+
+				if (!isDigit(chars[i]) && chars[i] != '.') {
+					justNumbers = false;
 				}
 
-				// Creating operator tokens
-				switch (c) {
-					case '*':
-						curLineTokens.add(new Token(TokenKind.astToken));
-						break;
+				if (stringLitUnderConstruction && chars[i] != '\"' && chars[i] != '\'') {
+					stringLit += chars[i];
+				}
 
-					case '>':
-						if (chars[i+1] == '=') {
-							i++;
-							curLineTokens.add(new Token(TokenKind.greaterEqualToken));
-						}
-						else {
-							curLineTokens.add(new Token(TokenKind.greaterToken));
-						}
-						break;
+				if (!stringLitUnderConstruction) {
+					int increment = createOperatorTokens(chars, i);
+					i += increment;
+				}
 
-					case '<':
-						if (chars[i+1] == '=') {
-							i++;
-							curLineTokens.add(new Token(TokenKind.lessEqualToken));
-						}
-						else {
-							curLineTokens.add(new Token(TokenKind.lessToken));
-						}
-						break;
+				if (chars[i] == '\"' && !stringLitUnderConstruction 
+					|| chars[i] == '\'' && !stringLitUnderConstruction) {
+					stringLitUnderConstruction = true;
+				}
+				else if ((chars[i] == '\"' && stringLitUnderConstruction)
+					|| (chars[i] == '\'' && stringLitUnderConstruction)) {
 
-					case '-':
-						curLineTokens.add(new Token(TokenKind.minusToken));
-						break;
-
-					case '+':
-						curLineTokens.add(new Token(TokenKind.plusToken));
-						break;
-
-					case '!':
-						if (chars[i+1] == '=') {
-							i++;
-							curLineTokens.add(new Token(TokenKind.notEqualToken));
-						}
-						break;
-
-					case '/':
-						if (chars[i+1] == '/') {
-							curLineTokens.add(new Token(TokenKind.doubleSlashToken));
-						}
-						else {
-							curLineTokens.add(new Token(TokenKind.slashToken));
-						}
-						break;
-
-					case ':':
-						curLineTokens.add(new Token(TokenKind.colonToken));
-						break;
-
-					case ',':
-						curLineTokens.add(new Token(TokenKind.commaToken));
-						break;
-
-					case '=':
-						if (chars[i+1] == '=') {
-							curLineTokens.add(new Token(TokenKind.doubleEqualToken));
-							i++;
-						}
-						if (chars[i-1] == '!') {
-							curLineTokens.add(new Token(TokenKind.notEqualToken));
-						}
-						if (chars[i+1] == '>') {
-							i++;
-							curLineTokens.add(new Token(TokenKind.greaterEqualToken));
-						}
-						if (chars[i+1] == '<') {
-							i++;
-							curLineTokens.add(new Token(TokenKind.lessEqualToken));
-						}
-						else {
-							curLineTokens.add(new Token(TokenKind.equalToken));
-						}
-						break;
-
-					case '{':
-						curLineTokens.add(new Token(TokenKind.leftBraceToken));
-						break;
-
-					case '[':
-						curLineTokens.add(new Token(TokenKind.leftBracketToken));
-						break;
-
-					case '(':
-						curLineTokens.add(new Token(TokenKind.leftParToken));
-						break;
-
-					case '}':
-						curLineTokens.add(new Token(TokenKind.rightBraceToken));
-						break;
-
-					case ']':
-						curLineTokens.add(new Token(TokenKind.rightBracketToken));
-						break;
-
-					case ')':
-						curLineTokens.add(new Token(TokenKind.rightParToken));
-						break;
-
-					case ';':
-						curLineTokens.add(new Token(TokenKind.semicolonToken));
-						break;
-					default:
-						break;
+					stringLitUnderConstruction = false;
+					Token token = new Token(TokenKind.stringToken);
+					token.stringLit = stringLit;
+					curLineTokens.add(token);
 				}
 			}
+			
+			if (justNumbers) {
+				if(containsDot) {
+					Token token = new Token(TokenKind.floatToken);
+					token.floatLit = Double.valueOf(word);
+					curLineTokens.add(token);
+				}
+				else {
+					Token token = new Token(TokenKind.integerToken);
+					token.integerLit = Integer.valueOf(word);
+					curLineTokens.add(token);
+				}
+			}
+
 		}
+
+		// Create name tokens
+		createNameTokens(s);
+	}
+
+	private int createOperatorTokens(char[] chars, int i) {
+		char c = chars[i];
+		int increment = 0;
+
+		switch (c) {
+			case '*':
+				curLineTokens.add(new Token(TokenKind.astToken));
+				break;
+
+			case '>':
+				if (chars[i+1] == '=') {
+					increment++;
+					curLineTokens.add(new Token(TokenKind.greaterEqualToken));
+				}
+				else {
+					curLineTokens.add(new Token(TokenKind.greaterToken));
+				}
+				break;
+
+			case '<':
+				if (chars[i+1] == '=') {
+					increment++;
+					curLineTokens.add(new Token(TokenKind.lessEqualToken));
+				}
+				else {
+					curLineTokens.add(new Token(TokenKind.lessToken));
+				}
+				break;
+
+			case '-':
+				curLineTokens.add(new Token(TokenKind.minusToken));
+				break;
+
+			case '+':
+				curLineTokens.add(new Token(TokenKind.plusToken));
+				break;
+
+			case '!':
+				if (chars[i+1] == '=') {
+					increment++;
+					curLineTokens.add(new Token(TokenKind.notEqualToken));
+				}
+				break;
+
+			case '/':
+				if (chars[i+1] == '/') {
+					curLineTokens.add(new Token(TokenKind.doubleSlashToken));
+				}
+				else {
+					curLineTokens.add(new Token(TokenKind.slashToken));
+				}
+				break;
+
+			case ':':
+				curLineTokens.add(new Token(TokenKind.colonToken));
+				break;
+
+			case ',':
+				curLineTokens.add(new Token(TokenKind.commaToken));
+				break;
+
+			case '=':
+				if (chars[i+1] == '=') {
+					curLineTokens.add(new Token(TokenKind.doubleEqualToken));
+					increment++;
+				}
+				if (chars[i-1] == '!') {
+					curLineTokens.add(new Token(TokenKind.notEqualToken));
+				}
+				if (chars[i+1] == '>') {
+					increment++;
+					curLineTokens.add(new Token(TokenKind.greaterEqualToken));
+				}
+				if (chars[i+1] == '<') {
+					increment++;
+					curLineTokens.add(new Token(TokenKind.lessEqualToken));
+				}
+				else {
+					curLineTokens.add(new Token(TokenKind.equalToken));
+				}
+				break;
+
+			case '{':
+				curLineTokens.add(new Token(TokenKind.leftBraceToken));
+				break;
+
+			case '[':
+				curLineTokens.add(new Token(TokenKind.leftBracketToken));
+				break;
+
+			case '(':
+				curLineTokens.add(new Token(TokenKind.leftParToken));
+				break;
+
+			case '}':
+				curLineTokens.add(new Token(TokenKind.rightBraceToken));
+				break;
+
+			case ']':
+				curLineTokens.add(new Token(TokenKind.rightBracketToken));
+				break;
+
+			case ')':
+				curLineTokens.add(new Token(TokenKind.rightParToken));
+				break;
+
+			case ';':
+				curLineTokens.add(new Token(TokenKind.semicolonToken));
+				break;
+			default:
+				break;
+		}
+		return increment;
 	}
 
 	private void createLiteralTokens(String s) {
@@ -230,14 +285,6 @@ public class Scanner {
 	}
 
 	private void createKeywordTokens(String s) {
-		String[] keywords = {
-			"and", "as", "assert", "break", "class",
-			"continue", "def", "del", "elif", "else",
-			"except", "False", "finally", "for", "from",
-			"global", "if", "import", "in", "is", "lambda",
-			"None", "nonlocal", "not", "or", "pass", "raise",
-			"return", "True", "try", "while", "with", "yield"
-		};
 
 		switch (s) {
 			case "and":
@@ -373,18 +420,13 @@ public class Scanner {
 				break;
 
 			default:
-				// for (String string : keywords) {
-				// 	if (s.contains(string)) {
-				// 		Main.error("Name contains reserved keyword.");
-				// 	}
-				// }
-				
 				break;
 		}
 	}
 
 	private void createNameTokens(String s) {
-		
+
+
 	}
 
 	private boolean isStringInt(String s) {
@@ -424,7 +466,6 @@ public class Scanner {
 		}
 		else if (s.contains("#")) {
 			String s2 = s.substring(0, s.indexOf("#"));
-			// System.out.println(s2); // CLEAN
 
 			if(s2.isBlank()) {
 				System.out.println("-- comment");
@@ -437,7 +478,6 @@ public class Scanner {
 		}
 
 		int n = findIndent(currentString);
-		System.out.println("-- find indent:" + n); // CLEAN
 
 		if (n > indents.peek()) {
 			indents.push(n);
@@ -449,7 +489,6 @@ public class Scanner {
 		}
 
 		if (n != indents.peek()) {
-			// System.out.println("Indent failiure");
 			scannerError("Indent failiure");
 		}
 	}

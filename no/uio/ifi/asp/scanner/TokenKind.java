@@ -111,4 +111,16 @@ public enum TokenKind {
     public String toString() {
         return image;
     }
+
+    public static boolean contains(String tokenName) {
+
+		for (TokenKind c : TokenKind.values()) {
+            
+			if (c.toString().equals(tokenName)) {
+				return true;
+			}
+		}
+	
+		return false;
+	}
 }
