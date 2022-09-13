@@ -419,7 +419,6 @@ public class Scanner {
 		// TODO: Must handle names where first char is digit.
 		//Currently just removes the digit and still makes the name token
 		// must handle digits as well
-		String newString = "";
 		String currentWord = "";
 		boolean stringLiteral = false;
 
@@ -489,7 +488,6 @@ public class Scanner {
 				indents.pop();
 				curLineTokens.add(new Token(dedentToken, curLineNum()));
 			}
-			System.out.print("EOF: " + s + "CLEANNNN");
 			curLineTokens.add(new Token(eofToken, curLineNum()));
 			return;
 		}
