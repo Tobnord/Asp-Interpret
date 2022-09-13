@@ -86,8 +86,6 @@ public class Scanner {
 			return;
 		}
 
-
-
 		// List words delimited by whitespace
 		String[] strArr = s.split("\\s+");
 
@@ -288,11 +286,11 @@ public class Scanner {
 
 		switch (s) {
 			case "and":
-				curLineTokens.add(new Token(TokenKind.semicolonToken));
+				curLineTokens.add(new Token(TokenKind.andToken));
 				break;
 
 			case "as":
-				curLineTokens.add(new Token(TokenKind.semicolonToken));
+				curLineTokens.add(new Token(TokenKind.asToken));
 				break;
 
 			case "assert":
@@ -356,7 +354,7 @@ public class Scanner {
 				break;
 
 			case "import":
-				curLineTokens.add(new Token(TokenKind.ifToken));
+				curLineTokens.add(new Token(TokenKind.importToken));
 				break;
 
 			case "in":
