@@ -86,8 +86,6 @@ public class Scanner {
 			return;
 		}
 
-
-
 		// List words delimited by whitespace
 		String[] strArr = s.split("\\s+");
 
@@ -95,6 +93,12 @@ public class Scanner {
 		for (String word : strArr) {
 			// List chars in word
 			char[] chars = word.toCharArray();
+
+			List<Character> charList = new ArrayList<>();
+			for (char ch: chars) {
+				charList.add(ch);
+			}
+				
 
 			boolean containsDot = false;
 			boolean justNumbers = true;
@@ -274,25 +278,15 @@ public class Scanner {
 		return increment;
 	}
 
-	private void createLiteralTokens(String s) {
-		if (isStringFloat(s)) {
-			curLineTokens.add(new Token(TokenKind.floatToken));
-		}
-		else if (isStringInt(s)) {
-			curLineTokens.add(new Token(TokenKind.integerToken));
-		}
-		
-	}
-
 	private void createKeywordTokens(String s) {
 
 		switch (s) {
 			case "and":
-				curLineTokens.add(new Token(TokenKind.semicolonToken));
+				curLineTokens.add(new Token(TokenKind.andToken));
 				break;
 
 			case "as":
-				curLineTokens.add(new Token(TokenKind.semicolonToken));
+				curLineTokens.add(new Token(TokenKind.asToken));
 				break;
 
 			case "assert":
@@ -356,7 +350,7 @@ public class Scanner {
 				break;
 
 			case "import":
-				curLineTokens.add(new Token(TokenKind.ifToken));
+				curLineTokens.add(new Token(TokenKind.importToken));
 				break;
 
 			case "in":
