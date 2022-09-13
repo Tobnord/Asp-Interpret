@@ -55,11 +55,13 @@ public class Scanner {
 
 		// Read the next line:
 		String line = null;
+		boolean eof = false;
 		try {
 			line = sourceFile.readLine();
 			if (line == null) {
 				sourceFile.close();
 				sourceFile = null;
+				eof = true;
 			} else {
 				Main.log.noteSourceLine(curLineNum(), line);
 			}
@@ -75,6 +77,11 @@ public class Scanner {
 
 		// Terminate line:
 		curLineTokens.add(new Token(newLineToken, curLineNum()));
+
+		// Should create a eof token, but for some reason, line never is never set to null...
+		if (line == null) {
+			curLineTokens.add(new Token(eofToken, curLineNum()));
+		}
 
 		for (Token t : curLineTokens)
 			Main.log.noteToken(t);
@@ -101,46 +108,85 @@ public class Scanner {
 			boolean containsDot = false;
 			boolean justNumbers = true;
 			String stringLit = "";
-			boolean stringLitUnderConstruction = false;
+			String currentWord = "";
+			boolean stringLiteral = false;
 
-			if (TokenKind.contains(word)) {
-				createKeywordTokens(word);
-				continue;
-			}
+			
 
 			if (word.contains(".")) {
 				containsDot = true;
 			}
 
+			
+
 			// Loop through chars in word
 			for (int i = 0; i < chars.length; i++) {
 
-				if (!isDigit(chars[i]) && chars[i] != '.') {
+				char c = chars[i];
+
+				if (!isDigit(c) && c != '.') {
 					justNumbers = false;
 				}
 
-				if (stringLitUnderConstruction && chars[i] != '\"' && chars[i] != '\'') {
-					stringLit += chars[i];
+				if (stringLiteral && c != '\"' && c != '\'') {
+					stringLit += c;
 				}
 
-				if (!stringLitUnderConstruction) {
+				if (!stringLiteral) {
 					i += createOperatorTokens(chars, i);
 				}
 
-				if (chars[i] == '\"' && !stringLitUnderConstruction 
-					|| chars[i] == '\'' && !stringLitUnderConstruction) {
-					stringLitUnderConstruction = true;
+				if (c == '\"' && !stringLiteral 
+					|| c == '\'' && !stringLiteral) {
+					stringLiteral = true;
 				}
-				else if ((chars[i] == '\"' && stringLitUnderConstruction)
-					|| (chars[i] == '\'' && stringLitUnderConstruction)) {
+				else if ((c == '\"' && stringLiteral)
+					|| (c == '\'' && stringLiteral)) {
 
-					stringLitUnderConstruction = false;
+					stringLiteral = false;
 					Token token = new Token(TokenKind.stringToken);
 					token.stringLit = stringLit;
 					curLineTokens.add(token);
 				}
+
+				// filters through and constructs the remainding chars into a word that has to
+				// be a name token
+				if (!isLetterAZ(c) && c != '_' && !isDigit(c)) {
+
+					if(currentWord.length() > 0 && isDigit(currentWord.charAt(0))) {
+						scannerError("Invalid nameToken. Name cant start with digit: " + currentWord);
+					}
+					else if (currentWord.length() > 0 && !checkIfStringIsKeyWord(currentWord)) {
+						Token token = new Token(TokenKind.nameToken);
+						token.name = String.valueOf(currentWord);
+						curLineTokens.add(token);
+						currentWord = "";
+					}
+
+					if (c == ' ') {
+						currentWord = "";
+					}
+					continue;
+				}
+				else {
+					if (!stringLiteral && currentWord.length() == 0 && isDigit(c)) {
+						continue;
+					}
+					else if (!stringLiteral) {
+						currentWord += c;
+					}
+				}
+
+				
+			}
+
+			// creates keyword tokens
+			if (TokenKind.contains(word)) {
+				createKeywordTokens(word);
+				continue;
 			}
 			
+			// creates integer and float literal tokens
 			if (justNumbers) {
 				if(containsDot) {
 					Token token = new Token(TokenKind.floatToken);
@@ -155,13 +201,12 @@ public class Scanner {
 				}
 			}
 		}
-		// Create name tokens
-		createNameTokens(s);
 	}
 
 	private int createOperatorTokens(char[] chars, int i) {
 		char c = chars[i];
 		int increment = 0;
+		boolean isOneCharLong = chars.length == 1;
 
 		switch (c) {
 			case '*':
@@ -169,17 +214,20 @@ public class Scanner {
 				break;
 
 			case '>':
-				if (chars[i+1] == '=') {
+				if (isOneCharLong) {
+					curLineTokens.add(new Token(TokenKind.greaterToken));
+				}
+				else if (chars[i+1] == '=') {
 					increment++;
 					curLineTokens.add(new Token(TokenKind.greaterEqualToken));
-				}
-				else {
-					curLineTokens.add(new Token(TokenKind.greaterToken));
 				}
 				break;
 
 			case '<':
-				if (chars[i+1] == '=') {
+				if (isOneCharLong) {
+					curLineTokens.add(new Token(TokenKind.lessToken));
+				}
+				else if (chars[i+1] == '=') {
 					increment++;
 					curLineTokens.add(new Token(TokenKind.lessEqualToken));
 				}
@@ -197,14 +245,20 @@ public class Scanner {
 				break;
 
 			case '!':
-				if (chars[i+1] == '=') {
+				if (isOneCharLong) {
+					break;
+				}
+				else if(chars[i+1] == '=') {
 					increment++;
 					curLineTokens.add(new Token(TokenKind.notEqualToken));
 				}
 				break;
 
 			case '/':
-				if (chars[i+1] == '/') {
+				if (isOneCharLong) {
+					curLineTokens.add(new Token(TokenKind.slashToken));
+				}
+				else if (chars[i+1] == '/') {
 					curLineTokens.add(new Token(TokenKind.doubleSlashToken));
 				}
 				else {
@@ -221,18 +275,21 @@ public class Scanner {
 				break;
 
 			case '=':
-				if (chars[i+1] == '=') {
+				if (isOneCharLong) {
+					curLineTokens.add(new Token(TokenKind.equalToken));
+				}
+				else if (chars[i+1] == '=') {
 					curLineTokens.add(new Token(TokenKind.doubleEqualToken));
 					increment++;
 				}
-				if (chars[i-1] == '!') {
+				else if (chars[i-1] == '!') {
 					curLineTokens.add(new Token(TokenKind.notEqualToken));
 				}
-				if (chars[i+1] == '>') {
+				else if (chars[i+1] == '>') {
 					increment++;
 					curLineTokens.add(new Token(TokenKind.greaterEqualToken));
 				}
-				if (chars[i+1] == '<') {
+				else if (chars[i+1] == '<') {
 					increment++;
 					curLineTokens.add(new Token(TokenKind.lessEqualToken));
 				}
@@ -389,7 +446,7 @@ public class Scanner {
 				curLineTokens.add(new Token(TokenKind.returnToken));
 				break;
 
-			case "true":
+			case "True":
 				curLineTokens.add(new Token(TokenKind.trueToken));
 				break;
 
@@ -414,52 +471,6 @@ public class Scanner {
 		}
 	}
 
-	private void createNameTokens(String s) {
-		// TODO: Must handle names where first char is digit.
-		//Currently just removes the digit and still makes the name token
-		// must handle digits as well
-		String currentWord = "";
-		boolean stringLiteral = false;
-
-		char[] chars = s.toCharArray();
-		for (int i = 0; i < chars.length; i++) {
-			char c = chars[i];
-
-			if ((c == '\'' && stringLiteral) || (c == '\"' && stringLiteral)) {
-				stringLiteral = false;
-			}
-			else if ((c == '\'' && !stringLiteral) || (c == '\"' && !stringLiteral)) {
-				stringLiteral = true;
-			}
-
-			if (!isLetterAZ(c) && c != '_' && !isDigit(c)) {
-
-				if(currentWord.length() > 0 && isDigit(currentWord.charAt(0))) {
-					scannerError("Invalid nameToken. Name cant start with digit: " + currentWord);
-				}
-				else if (currentWord.length() > 0 && !checkIfStringIsKeyWord(currentWord)) {
-					Token token = new Token(TokenKind.nameToken);
-                    token.name = String.valueOf(currentWord);
-                    curLineTokens.add(token);
-					currentWord = "";
-				}
-
-				if (c == ' ') {
-					currentWord = "";
-				}
-				continue;
-			}
-			else {
-				if (!stringLiteral && currentWord.length() == 0 && isDigit(c)) {
-					continue;
-				}
-				else if (!stringLiteral) {
-					currentWord += c;
-				}
-			}
-		}
-	}
-
 	private boolean checkIfStringIsKeyWord(String s) {
 		ArrayList<String> keyWords = new ArrayList<String>();
 		String[] keyWordsArray = {
@@ -480,16 +491,9 @@ public class Scanner {
 	}
 
 	private void indentHandling(String s) {
+
 		String currentString = s;
 		System.out.println("|" + s + "|");
-		if (s == null) {
-			while (indents.peek() > 0) {
-				indents.pop();
-				curLineTokens.add(new Token(dedentToken, curLineNum()));
-			}
-			curLineTokens.add(new Token(eofToken, curLineNum()));
-			return;
-		}
 
 		if (s.isBlank()) {
 			System.out.println("-- blank");
