@@ -94,6 +94,12 @@ public class Scanner {
 			// List chars in word
 			char[] chars = word.toCharArray();
 
+			List<Character> charList = new ArrayList<>();
+			for (char ch: chars) {
+				charList.add(ch);
+			}
+				
+
 			boolean containsDot = false;
 			boolean justNumbers = true;
 			String stringLit = "";
@@ -270,16 +276,6 @@ public class Scanner {
 				break;
 		}
 		return increment;
-	}
-
-	private void createLiteralTokens(String s) {
-		if (isStringFloat(s)) {
-			curLineTokens.add(new Token(TokenKind.floatToken));
-		}
-		else if (isStringInt(s)) {
-			curLineTokens.add(new Token(TokenKind.integerToken));
-		}
-		
 	}
 
 	private void createKeywordTokens(String s) {
