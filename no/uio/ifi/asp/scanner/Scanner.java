@@ -82,6 +82,10 @@ public class Scanner {
 
 	private void createTokens(String s) {
 
+		if (s.contains("#")) {
+			s = s.substring(0, s.indexOf("#"));
+		}
+
 		if(s.isEmpty()) {
 			return;
 		}
@@ -93,12 +97,6 @@ public class Scanner {
 		for (String word : strArr) {
 			// List chars in word
 			char[] chars = word.toCharArray();
-
-			List<Character> charList = new ArrayList<>();
-			for (char ch: chars) {
-				charList.add(ch);
-			}
-				
 
 			boolean containsDot = false;
 			boolean justNumbers = true;
@@ -126,8 +124,8 @@ public class Scanner {
 				}
 
 				if (!stringLitUnderConstruction) {
-					int increment = createOperatorTokens(chars, i);
-					i += increment;
+					i += createOperatorTokens(chars, i);
+					continue;
 				}
 
 				if (chars[i] == '\"' && !stringLitUnderConstruction 
@@ -151,14 +149,13 @@ public class Scanner {
 					curLineTokens.add(token);
 				}
 				else {
+					if (word.isBlank()) { continue;}
 					Token token = new Token(TokenKind.integerToken);
 					token.integerLit = Integer.valueOf(word);
 					curLineTokens.add(token);
 				}
 			}
-
 		}
-
 		// Create name tokens
 		createNameTokens(s);
 	}
@@ -419,28 +416,70 @@ public class Scanner {
 	}
 
 	private void createNameTokens(String s) {
+		// TODO: Must handle names where first char is digit.
+		//Currently just removes the digit and still makes the name token
+		// must handle digits as well
+		String newString = "";
+		String currentWord = "";
+		boolean stringLiteral = false;
 
+		char[] chars = s.toCharArray();
+		for (int i = 0; i < chars.length; i++) {
+			char c = chars[i];
 
+			if ((c == '\'' && stringLiteral) || (c == '\"' && stringLiteral)) {
+				stringLiteral = false;
+			}
+			else if ((c == '\'' && !stringLiteral) || (c == '\"' && !stringLiteral)) {
+				stringLiteral = true;
+			}
+
+			if (!isLetterAZ(c) && c != '_' && !isDigit(c)) {
+
+				if(currentWord.length() > 0 && isDigit(currentWord.charAt(0))) {
+					scannerError("Invalid nameToken. Name cant start with digit: " + currentWord);
+				}
+				else if (currentWord.length() > 0 && !checkIfStringIsKeyWord(currentWord)) {
+					Token token = new Token(TokenKind.nameToken);
+                    token.name = String.valueOf(currentWord);
+                    curLineTokens.add(token);
+					currentWord = "";
+				}
+
+				if (c == ' ') {
+					currentWord = "";
+				}
+				continue;
+			}
+			else {
+				if (!stringLiteral && currentWord.length() == 0 && isDigit(c)) {
+					continue;
+				}
+				else if (!stringLiteral) {
+					currentWord += c;
+				}
+			}
+		}
 	}
 
-	private boolean isStringInt(String s) {
-		try {
-			Integer.parseInt(s);
-		} catch (NumberFormatException e) {
+	private boolean checkIfStringIsKeyWord(String s) {
+		ArrayList<String> keyWords = new ArrayList<String>();
+		String[] keyWordsArray = {
+			"and", "as", "assert", "break", "class", "continue",
+			"def", "del", "elif", "else", "except", "False", "finally",
+			"for", "from", "global", "if", "import", "in", "is", "lambda",
+			"None", "nonlocal", "not", "or", "pass", "raise", "return", "True",
+			"try", "while", "with", "yield"
+		};
+		keyWords.addAll(Arrays.asList(keyWordsArray));
+
+		if (keyWords.contains(s)) {
+			return true;
+		}
+		else {
 			return false;
 		}
-		return true;
 	}
-
-	private boolean isStringFloat(String s) {
-		try {
-			Float.parseFloat(s);
-		} catch (NumberFormatException e) {
-			return false;
-		}
-		return true;
-	}
-				
 
 	private void indentHandling(String s) {
 		String currentString = s;
@@ -450,6 +489,7 @@ public class Scanner {
 				indents.pop();
 				curLineTokens.add(new Token(dedentToken, curLineNum()));
 			}
+			System.out.print("EOF: " + s + "CLEANNNN");
 			curLineTokens.add(new Token(eofToken, curLineNum()));
 			return;
 		}
@@ -473,17 +513,15 @@ public class Scanner {
 
 		int n = findIndent(currentString);
 
-		if (n > indents.peek()) {
-			indents.push(n);
-			curLineTokens.add(new Token(indentToken, curLineNum()));
-		}
-		else if (n < indents.peek()) {
-			indents.pop();
-			curLineTokens.add(new Token(dedentToken, curLineNum()));
-		}
-
-		if (n != indents.peek()) {
-			scannerError("Indent failiure");
+		while (n != indents.peek()) {
+			if (n > indents.peek()) {
+				indents.push(n);
+				curLineTokens.add(new Token(indentToken, curLineNum()));
+			}
+			else if (n < indents.peek()) {
+				indents.pop();
+				curLineTokens.add(new Token(dedentToken, curLineNum()));
+			}
 		}
 	}
 
@@ -500,38 +538,26 @@ public class Scanner {
 	}
 
 	private String expandLeadingTabs(String s) {
-		// -- Must be changed in part 1:
+
 		int n = 0;
-		int m = 0;
 		String newString = "";
 
 		for (int i = 0; i < s.length(); i++) {
-			newString = "";
-			m = 0;
-			if (s.charAt(i) == ' ') {
+			char c = s.charAt(i);
+
+			if (c == ' ') {
 				n++;
+				newString += c;
 			}
-			else if (s.charAt(i) == '\t') {
-				m = 4 - (n % 4);
-				n += m;
-
-				String spaces = "";
+			else if (c == '\t') {
+				int m = 4 - (n % 4);
 				for (int j = 0; j < m; j++) {
-					spaces += " ";
+					newString += ' ';
+					n++;
 				}
-
-				char[] chars = s.toCharArray();
-
-				for (int j = 0; j < chars.length; j++) {
-					if (j != chars[i]) {
-						newString = newString + chars[j];
-					}
-				}
-
-				newString = spaces + newString;
 			}
 			else {
-				newString = s;
+				newString += c;
 			}
 		}
 		return newString;
