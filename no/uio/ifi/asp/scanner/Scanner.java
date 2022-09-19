@@ -71,18 +71,27 @@ public class Scanner {
 		}
 
 		// -- Must be changed in part 1:
-		String expandedLeadingTabsString = expandLeadingTabs(line);
-		indentHandling(expandedLeadingTabsString);
-		createTokens(expandedLeadingTabsString);
-
-		// Terminate line:
-		curLineTokens.add(new Token(newLineToken, curLineNum()));
-
-		// Should create a eof token, but for some reason, line never is never set to null...
+		
 		if (line == null) {
 			curLineTokens.add(new Token(eofToken, curLineNum()));
+		} else {
+			String expandedLeadingTabsString = expandLeadingTabs(line);
+			indentHandling(expandedLeadingTabsString);
+			createTokens(expandedLeadingTabsString);
+
+			// Terminate line:
+			// if line is not blank or every char before the # is not blank, then generate a newline token
+			if (!line.isBlank()) {
+				if (!line.contains("#")) {
+					curLineTokens.add(new Token(newLineToken, curLineNum()));
+				}
+				else if (!line.substring(0, line.indexOf('#')).isBlank()) {
+					curLineTokens.add(new Token(newLineToken, curLineNum()));
+				}
+			}
 		}
 
+		
 		for (Token t : curLineTokens)
 			Main.log.noteToken(t);
 	}
