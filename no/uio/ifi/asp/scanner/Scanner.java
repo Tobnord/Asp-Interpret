@@ -132,7 +132,7 @@ public class Scanner {
 			// Prays to Allah the allmighty that it creates nameTokens and keywordTokens
 			// correctly
 			else if (isLetterAZ(chars[i]) || chars[i] == '_') {
-				System.out.println("\nNAME OR KEYWORD found:" + chars[i]);
+				//System.out.println("\nNAME OR KEYWORD found:" + chars[i]);
 				i = createNameAndKeywordTokens(chars, i);
 			}
 
@@ -165,7 +165,17 @@ public class Scanner {
 			}
 			stopIndex = i;
 		}
-
+		if(!currentWord.isBlank()){
+			Token token = new Token(nameToken, curLineNum());
+			token.name = currentWord;
+			if (token.checkResWords()) {
+				currentWord = "";
+				curLineTokens.add(token);
+			}
+			else{
+				curLineTokens.add(token);
+			}
+		}
 		return stopIndex;
 	}
 
@@ -239,6 +249,11 @@ public class Scanner {
 	private int createDigitTokens(char[] chars, int startIndex) {
 		String digitString = "" + chars[startIndex];
 		int stopIndex = startIndex;
+
+		//Stops generation of digitTokens if the digit contains a "-"
+		if(digitString.contains("-")){
+			return stopIndex+1;
+		}
 
 		for (int i = startIndex + 1; i < chars.length; i++) {
 			if (!isDigit(chars[i]) && chars[i] != '.') {
