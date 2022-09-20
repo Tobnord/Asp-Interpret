@@ -23,16 +23,17 @@ public class Token {
 		lineNum = lNum;
 	}
 
-	void checkResWords() {
+	boolean checkResWords() {
 		if (kind != nameToken)
-			return;
+			return false;
 
 		for (TokenKind tk : EnumSet.range(andToken, yieldToken)) {
 			if (name.equals(tk.image)) {
 				kind = tk;
-				break;
+				return true;
 			}
 		}
+		return false;
 	}
 
 	public String showInfo() {

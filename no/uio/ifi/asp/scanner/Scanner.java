@@ -71,7 +71,7 @@ public class Scanner {
 		}
 
 		// -- Must be changed in part 1:
-		
+
 		if (line == null) {
 			curLineTokens.add(new Token(eofToken, curLineNum()));
 		} else {
@@ -81,64 +81,64 @@ public class Scanner {
 			createTokens(stringWithoutWhitespace);
 
 			// Terminate line:
-			// if line is not blank or every char before the # is not blank, then generate a newline token
+			// if line is not blank or every char before the # is not blank, then generate a
+			// newline token
 			if (!line.isBlank()) {
 				if (!line.contains("#")) {
 					curLineTokens.add(new Token(newLineToken, curLineNum()));
-				}
-				else if (!line.substring(0, line.indexOf('#')).isBlank()) {
+				} else if (!line.substring(0, line.indexOf('#')).isBlank()) {
 					curLineTokens.add(new Token(newLineToken, curLineNum()));
 				}
 			}
 		}
 
-		
 		for (Token t : curLineTokens)
 			Main.log.noteToken(t);
 	}
 
 	private void createTokens(String s) {
 
-		//Stops createTokens from reading comments
+		// Stops createTokens from reading comments
 		if (s.contains("#")) {
 			s = s.substring(0, s.indexOf("#"));
 		}
-		if(s.isEmpty()) {
+		if (s.isEmpty()) {
 			return;
 		}
 
 		char[] chars = s.toCharArray();
 
-		//Loops through the current line, and creates tokens of the appropriate kind
+		// Loops through the current line, and creates tokens of the appropriate kind
 		for (int i = 0; i < chars.length; i++) {
 
-			//Initiates creation of digit tokens if the char is a digit
-			if(isDigit(chars[i])) {
-				System.out.println("\nDIGIT found:" + chars[i]);
+			// Initiates creation of digit tokens if the char is a digit
+			if (isDigit(chars[i])) {
+				//System.out.println("\nDIGIT found:" + chars[i]);
 				i = createDigitTokens(chars, i);
 			}
-			
-			//Initiates creation of operator tokens if the char is an operator
-			else if(isOperator(chars[i])) {
-				System.out.println("\nOPERATOR found:" + chars[i]);
+
+			// Initiates creation of operator tokens if the char is an operator
+			else if (isOperator(chars[i])) {
+				// System.out.println("\nOPERATOR found:" + chars[i]);
 				i = createOperatorToken(chars, i);
 			}
 
-			//Initiates creation of string literal tokens if the char is a quotation
-			else if(isQuotation(chars[i])) {
-				System.out.println("\nQUOTATION found:" + chars[i]);
+			// Initiates creation of string literal tokens if the char is a quotation
+			else if (isQuotation(chars[i])) {
+				//System.out.println("\nQUOTATION found:" + chars[i]);
 				i = createStringLiteral(chars, i);
 			}
 
-			//Prays to Allah the allmighty that it creates nameTokens and keywordTokens correctly
-			else if(isLetterAZ(chars[i]) || chars[i] == '_') {
+			// Prays to Allah the allmighty that it creates nameTokens and keywordTokens
+			// correctly
+			else if (isLetterAZ(chars[i]) || chars[i] == '_') {
 				System.out.println("\nNAME OR KEYWORD found:" + chars[i]);
 				i = createNameAndKeywordTokens(chars, i);
 			}
 
-			else{
-				//Something is critically wrong here! 
-				System.out.println("Say what now? "+chars[i]);
+			else {
+				// Something is critically wrong here!
+				System.out.println("Say what now? " + chars[i]);
 			}
 		}
 	}
@@ -148,25 +148,27 @@ public class Scanner {
 		String currentWord = "" + chars[startIndex];
 
 		for (int i = startIndex + 1; i < chars.length; i++) {
-			if (!isDigit(chars[i]) && !isLetterAZ(chars[i]) && chars[i] != '_') {
-				Token token = new Token(nameToken, curLineNum());
-				token.name = currentWord;
-				token.checkResWords();
-				curLineTokens.add(token);
+			Token token = new Token(nameToken, curLineNum());
+			token.name = currentWord;
 
-				System.out.print("in name and keywords: " + chars[i]);
+			if (token.checkResWords()) {
+				currentWord = "";
+				curLineTokens.add(token);
+			}
+
+			if (!isDigit(chars[i]) && !isLetterAZ(chars[i]) && chars[i] != '_') {
+				curLineTokens.add(token);
 				stopIndex = i - 1;
 				return stopIndex;
-			}
-			else{
+			} else {
 				currentWord += chars[i];
 			}
 			stopIndex = i;
 		}
-		
+
 		return stopIndex;
 	}
-	
+
 	private int createStringLiteral(char[] chars, int startIndex) {
 		int stopIndex = startIndex;
 		String currentWord = "";
@@ -176,17 +178,16 @@ public class Scanner {
 				Token token = new Token(stringToken, curLineNum());
 				token.stringLit = currentWord;
 				curLineTokens.add(token);
-				
+
 				stopIndex = i;
 				return stopIndex;
-			}
-			else{
+			} else {
 				currentWord += (chars[i]);
 			}
 			stopIndex = i;
 		}
-		
-		//This is not supposed to happen! Syntax Error!
+
+		// This is not supposed to happen! Syntax Error!
 		// No end-quote found
 		Main.error("No endqoute for string");
 
@@ -197,51 +198,68 @@ public class Scanner {
 		String operator = "" + chars[startIndex];
 		int stopIndex = startIndex;
 
-		System.out.println("Operator: "+operator);
+		// System.out.println("Operator: " + operator);
 		if (chars.length > startIndex + 1) {
-			if (isOperator(chars[startIndex + 1])) {
+			if (isOperator(chars[startIndex + 1]) && isNextOperatorValid(chars[startIndex], chars[startIndex + 1])) {
 				operator += chars[startIndex + 1];
 				stopIndex++;
 			}
+			else if (chars[startIndex] == '-' && isDigit(chars[startIndex + 1])) {
+				createDigitTokens(chars, startIndex);
+			}
 		}
-		
+
 		for (TokenKind tk : EnumSet.range(astToken, semicolonToken)) {
+			// System.out.println("checking for Operator: "+operator);
 			if (operator.equals(tk.image)) {
-				System.out.println("final Operator kind: " + tk + "\nwith operator: " + operator);
+				// System.out.println("Operator: "+operator+" found in tk.image!");
+				//System.out.println("final Operator kind: " + tk + "\nwith operator: " + operator);
 				curLineTokens.add(new Token(tk, curLineNum()));
 				return stopIndex;
 			}
 		}
-		
+
 		return stopIndex;
+	}
+
+	//Returns true if an operator is a double operator
+	private boolean isNextOperatorValid(char first, char second) {
+		String doubleOperator = "" + first + second;
+		boolean result = false;
+
+		for (TokenKind tk : EnumSet.range(astToken, semicolonToken)) {
+			if (doubleOperator.equals(tk.image)) {
+				result = true;
+			}
+		}
+		
+		return result;
 	}
 
 	private int createDigitTokens(char[] chars, int startIndex) {
 		String digitString = "" + chars[startIndex];
 		int stopIndex = startIndex;
-		
+
 		for (int i = startIndex + 1; i < chars.length; i++) {
 			if (!isDigit(chars[i]) && chars[i] != '.') {
 				Token token = new Token(integerToken, curLineNum());
 				if (digitString.contains(".")) {
 					token.floatLit = Float.parseFloat(digitString);
-				}
-				else {
+				} else {
 					token.integerLit = Integer.parseInt(digitString);
 				}
 				curLineTokens.add(token);
-				
+
 				stopIndex = i - 1;
 				return stopIndex;
-			}
-			else{
+			} else {
 				digitString += (chars[i]);
 			}
 			stopIndex = i;
 		}
 		return stopIndex;
 	}
-	
+
 	private void indentHandling(String s) {
 
 		String currentString = s;
@@ -250,15 +268,13 @@ public class Scanner {
 		if (s.isBlank()) {
 			System.out.println("-- blank");
 			return;
-		}
-		else if (s.contains("#")) {
+		} else if (s.contains("#")) {
 			String s2 = s.substring(0, s.indexOf("#"));
 
-			if(s2.isBlank()) {
+			if (s2.isBlank()) {
 				System.out.println("-- comment");
 				return;
-			}
-			else {
+			} else {
 				currentString = s2;
 				System.out.println("-- code before comment");
 			}
@@ -270,8 +286,7 @@ public class Scanner {
 			if (n > indents.peek()) {
 				indents.push(n);
 				curLineTokens.add(new Token(indentToken, curLineNum()));
-			}
-			else if (n < indents.peek()) {
+			} else if (n < indents.peek()) {
 				indents.pop();
 				curLineTokens.add(new Token(dedentToken, curLineNum()));
 			}
@@ -301,15 +316,13 @@ public class Scanner {
 			if (c == ' ') {
 				n++;
 				newString += c;
-			}
-			else if (c == '\t') {
+			} else if (c == '\t') {
 				int m = 4 - (n % 4);
 				for (int j = 0; j < m; j++) {
 					newString += ' ';
 					n++;
 				}
-			}
-			else {
+			} else {
 				newString += c;
 			}
 		}
@@ -326,14 +339,15 @@ public class Scanner {
 
 	private boolean isOperator(char c) {
 		return c == '*'
-		|| c == '=' || c == '/' || c == '>' || c == '<'
-		|| c == '-' || c == '!' || c == '%' || c == '+'
-		|| c == ':' || c == ',' || c == '[' || c == ']'
-		|| c == '{' || c == '}' || c == '(' || c == ')';
+				|| c == '=' || c == '/' || c == '>' || c == '<'
+				|| c == '-' || c == '!' || c == '%' || c == '+'
+				|| c == ':' || c == ',' || c == '[' || c == ']'
+				|| c == '{' || c == '}' || c == '(' || c == ')'
+				|| c == ';';
 	}
 
 	private boolean isQuotation(char c) {
-		return c == '\'' || c == '\"'; 
+		return c == '\'' || c == '\"';
 	}
 
 	public boolean isCompOpr() {
