@@ -95,7 +95,6 @@ public class Scanner {
 					createTokens(word);
 				}
 			}
-			
 
 			// Terminate line:
 			// if line is not blank or every char before the # is not blank, then generate a
@@ -115,7 +114,7 @@ public class Scanner {
 
 	private void raiseErrorIfNumberOfQuotesOdd(String s) {
 		List<Integer> indexOfQuotesList = new ArrayList<Integer>();
-				
+
 		if (s.contains("\"") || s.contains("\'")) {
 			char[] charArray = s.toCharArray();
 			for (int i = 0; i < charArray.length; i++) {
@@ -133,7 +132,6 @@ public class Scanner {
 	private void createTokens(String s) {
 
 		char[] chars = s.toCharArray();
-		
 
 		// Loops through the current line, and creates tokens of the appropriate kind
 		for (int i = 0; i < chars.length; i++) {
@@ -144,9 +142,9 @@ public class Scanner {
 
 			// Initiates creation of string literal tokens if the char is a quotation
 			if (stringUnderConstruction || isQuotation(chars[i])) {
-				
+
 				i = createStringLiteralToken(chars, i);
-				
+
 			}
 
 			// Initiates creation of digit tokens if the char is a digit
@@ -162,7 +160,7 @@ public class Scanner {
 			// Initiates createation of nameTokens and keywordTokens
 			// correctly
 			else if (isLetterAZ(chars[i]) || chars[i] == '_') {
-				//System.out.println("\nNAME OR KEYWORD found:" + chars[i]);
+				// System.out.println("\nNAME OR KEYWORD found:" + chars[i]);
 				i = createNameAndKeywordTokens(chars, i);
 			}
 
@@ -173,21 +171,24 @@ public class Scanner {
 		}
 	}
 
-	//Creates a stringToken, and returns the index for the end of the string
+	// Creates a stringToken, and returns the index for the end of the string
 	private int createStringLiteralToken(char[] chars, int startIndex) {
 		int stopIndex = startIndex;
 
 		if (stringUnderConstruction) {
-			stringLiteral += chars[startIndex];
+
+			if (chars[startIndex] != quote) {
+				stringLiteral += chars[startIndex];
+			}
 
 			if (chars[startIndex] == quote) {
 				Token token = new Token(stringToken, curLineNum());
 				token.stringLit = stringLiteral;
 				curLineTokens.add(token);
-				
+
 				stringUnderConstruction = false;
 				stringLiteral = "";
-				
+
 				return stopIndex;
 			}
 		}
@@ -197,39 +198,37 @@ public class Scanner {
 		for (int i = startIndex + 1; i < chars.length; i++) {
 			System.out.print(stringLiteral + " " + chars[i]);
 			stopIndex = i;
-			
+
 			if (chars[i] == quote) {
-				
+
 				Token token = new Token(stringToken, curLineNum());
 				token.stringLit = stringLiteral;
 				curLineTokens.add(token);
-				
+
 				stringUnderConstruction = false;
 				stringLiteral = "";
-				
+
 				return stopIndex;
-			}
-			else {
+			} else {
 				stringLiteral += chars[i];
 			}
 		}
 
 		stringLiteral += " ";
-		
+
 		return stopIndex;
 	}
 
-	//Creates the appropriate name- or keywordToken, and returns the index for the end of the word
+	// Creates the appropriate name- or keywordToken, and returns the index for the
+	// end of the word
 	private int createNameAndKeywordTokens(char[] chars, int startIndex) {
 		int stopIndex = startIndex;
 		String currentWord = "" + chars[startIndex];
 		Token token = new Token(nameToken, curLineNum());
 
 		for (int i = startIndex + 1; i < chars.length; i++) {
-			
-			token.name = currentWord;
 
-			
+			token.name = currentWord;
 
 			if (!isDigit(chars[i]) && !isLetterAZ(chars[i]) && chars[i] != '_') {
 				if (token.checkResWords()) {
@@ -245,21 +244,21 @@ public class Scanner {
 			}
 			stopIndex = i;
 		}
-		//Handles name- or keywordTokens at the end of the line
-		if(!currentWord.isBlank()){
+		// Handles name- or keywordTokens at the end of the line
+		if (!currentWord.isBlank()) {
 			token.name = currentWord;
 			if (token.checkResWords()) {
 				currentWord = "";
 				curLineTokens.add(token);
-			}
-			else{
+			} else {
 				curLineTokens.add(token);
 			}
 		}
 		return stopIndex;
 	}
 
-	//Creates the appropriate operatorToken, and returns the index for the end of the operator(s)
+	// Creates the appropriate operatorToken, and returns the index for the end of
+	// the operator(s)
 	private int createOperatorToken(char[] chars, int startIndex) {
 		String operator = "" + chars[startIndex];
 		int stopIndex = startIndex;
@@ -268,8 +267,7 @@ public class Scanner {
 			if (isOperator(chars[startIndex + 1]) && isNextOperatorValid(chars[startIndex], chars[startIndex + 1])) {
 				operator += chars[startIndex + 1];
 				stopIndex++;
-			}
-			else if (chars[startIndex] == '-' && isDigit(chars[startIndex + 1])) {
+			} else if (chars[startIndex] == '-' && isDigit(chars[startIndex + 1])) {
 				createDigitTokens(chars, startIndex);
 			}
 		}
@@ -284,7 +282,7 @@ public class Scanner {
 		return stopIndex;
 	}
 
-	//Returns true if an operator is a double operator
+	// Returns true if an operator is a double operator
 	private boolean isNextOperatorValid(char first, char second) {
 		String doubleOperator = "" + first + second;
 		boolean result = false;
@@ -294,17 +292,18 @@ public class Scanner {
 				result = true;
 			}
 		}
-		
+
 		return result;
 	}
 
-	//Creates the appropriate integer- or floatToken, and returns the index for the end of the number
+	// Creates the appropriate integer- or floatToken, and returns the index for the
+	// end of the number
 	private int createDigitTokens(char[] chars, int startIndex) {
 		String digitString = "" + chars[startIndex];
 		int stopIndex = startIndex;
 
-		if(digitString.contains("-")){
-			return stopIndex+1;
+		if (digitString.contains("-")) {
+			return stopIndex + 1;
 		}
 
 		for (int i = startIndex + 1; i < chars.length; i++) {
@@ -325,18 +324,17 @@ public class Scanner {
 			stopIndex = i;
 		}
 
-		//Handles digits at the end of the line
-		if(!digitString.isBlank()){
-            Token token = new Token(integerToken, curLineNum());
-            if(digitString.contains(".")){
-                token.floatLit = Float.parseFloat(digitString);
-            }
-            else{
-                token.integerLit = Integer.parseInt(digitString);
-            }
-            curLineTokens.add(token);
-        }
-        return stopIndex;
+		// Handles digits at the end of the line
+		if (!digitString.isBlank()) {
+			Token token = new Token(integerToken, curLineNum());
+			if (digitString.contains(".")) {
+				token.floatLit = Float.parseFloat(digitString);
+			} else {
+				token.integerLit = Integer.parseInt(digitString);
+			}
+			curLineTokens.add(token);
+		}
+		return stopIndex;
 	}
 
 	private void indentHandling(String s) {
@@ -416,7 +414,7 @@ public class Scanner {
 		return '0' <= c && c <= '9';
 	}
 
-	//Returns True if char c is an operator
+	// Returns True if char c is an operator
 	private boolean isOperator(char c) {
 		return c == '*'
 				|| c == '=' || c == '/' || c == '>' || c == '<'
@@ -426,7 +424,7 @@ public class Scanner {
 				|| c == ';';
 	}
 
-	//Returns True if char c is a quotation mark
+	// Returns True if char c is a quotation mark
 	private boolean isQuotation(char c) {
 		return c == '\'' || c == '\"';
 	}
