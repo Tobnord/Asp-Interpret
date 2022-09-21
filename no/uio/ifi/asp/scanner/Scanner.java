@@ -146,14 +146,16 @@ public class Scanner {
 	private int createNameAndKeywordTokens(char[] chars, int startIndex) {
 		int stopIndex = startIndex;
 		String currentWord = "" + chars[startIndex];
+		Token token = new Token(nameToken, curLineNum());
 
 		for (int i = startIndex + 1; i < chars.length; i++) {
-			Token token = new Token(nameToken, curLineNum());
+			
 			token.name = currentWord;
 
 			if (token.checkResWords()) {
 				currentWord = "";
 				curLineTokens.add(token);
+				return stopIndex;
 			}
 
 			if (!isDigit(chars[i]) && !isLetterAZ(chars[i]) && chars[i] != '_') {
@@ -166,7 +168,6 @@ public class Scanner {
 			stopIndex = i;
 		}
 		if(!currentWord.isBlank()){
-			Token token = new Token(nameToken, curLineNum());
 			token.name = currentWord;
 			if (token.checkResWords()) {
 				currentWord = "";
