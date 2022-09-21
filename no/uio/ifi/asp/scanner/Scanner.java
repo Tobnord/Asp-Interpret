@@ -213,13 +213,14 @@ public class Scanner {
 			
 			token.name = currentWord;
 
-			if (token.checkResWords()) {
-				currentWord = "";
-				curLineTokens.add(token);
-				return stopIndex;
-			}
+			
 
 			if (!isDigit(chars[i]) && !isLetterAZ(chars[i]) && chars[i] != '_') {
+				if (token.checkResWords()) {
+					currentWord = "";
+					curLineTokens.add(token);
+					return stopIndex;
+				}
 				curLineTokens.add(token);
 				stopIndex = i - 1;
 				return stopIndex;
