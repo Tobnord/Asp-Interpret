@@ -18,6 +18,7 @@ public class Scanner {
 
 	private String stringLiteral = "";
 	private boolean stringUnderConstruction = false;
+	private char quote;
 
 	public Scanner(String fileName) {
 		curFileName = fileName;
@@ -73,7 +74,6 @@ public class Scanner {
 		}
 
 		// -- Must be changed in part 1:
-		String stringLiteral = "";
 		if (line == null) {
 			curLineTokens.add(new Token(eofToken, curLineNum()));
 		} else {
@@ -138,6 +138,10 @@ public class Scanner {
 		// Loops through the current line, and creates tokens of the appropriate kind
 		for (int i = 0; i < chars.length; i++) {
 
+			if (stringUnderConstruction == false && isQuotation(chars[i])) {
+				quote = chars[i];
+			}
+
 			// Initiates creation of string literal tokens if the char is a quotation
 			if (stringUnderConstruction || isQuotation(chars[i])) {
 				
@@ -175,14 +179,26 @@ public class Scanner {
 
 		if (stringUnderConstruction) {
 			stringLiteral += chars[startIndex];
+
+			if (chars[startIndex] == quote) {
+				Token token = new Token(stringToken, curLineNum());
+				token.stringLit = stringLiteral;
+				curLineTokens.add(token);
+				
+				stringUnderConstruction = false;
+				stringLiteral = "";
+				
+				return stopIndex;
+			}
 		}
 
 		stringUnderConstruction = true;
 
 		for (int i = startIndex + 1; i < chars.length; i++) {
+			System.out.print(stringLiteral + " " + chars[i]);
 			stopIndex = i;
 			
-			if (isQuotation(chars[i])) {
+			if (chars[i] == quote) {
 				
 				Token token = new Token(stringToken, curLineNum());
 				token.stringLit = stringLiteral;
