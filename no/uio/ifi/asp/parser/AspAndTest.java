@@ -1,5 +1,5 @@
+package no.uio.ifi.asp.parser;
 
-//package no.uio.ifi.asp.parser;
 import java.util.ArrayList;
 import no.uio.ifi.asp.main.*;
 import no.uio.ifi.asp.runtime.*;
@@ -18,9 +18,9 @@ class AspAndTest extends AspSyntax {
         AspAndTest aat = new AspAndTest(s.curLineNum());
         while (true) {
             aat.notTests.add(AspNotTest.parse(s));
-            if (s.curToken().kind != andToken)
+            if (s.curToken().kind != TokenKind.andToken)
                 break;
-            skip(s, andToken);
+            skip(s, TokenKind.andToken);
         }
         leaveParser("and test");
         return aat;
@@ -36,5 +36,11 @@ class AspAndTest extends AspSyntax {
             ++nPrinted;
         }
     }
-    // ...
+    
+
+    @Override
+    public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
+        // -- Must be changed in part 4:
+        return null;
+    }
 }

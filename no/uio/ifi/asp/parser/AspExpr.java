@@ -1,17 +1,13 @@
-// © 2021 Dag Langmyhr, Institutt for informatikk, Universitetet i Oslo
-
 package no.uio.ifi.asp.parser;
 
 import java.util.ArrayList;
-
 import no.uio.ifi.asp.main.*;
 import no.uio.ifi.asp.runtime.*;
 import no.uio.ifi.asp.scanner.*;
 import static no.uio.ifi.asp.scanner.TokenKind.*;
 
 public class AspExpr extends AspSyntax {
-    // -- Must be changed in part 2:
-    // ArrayList<AspAndTest> andTests = new ArrayList<>();
+    ArrayList<AspAndTests> andTests = new ArrayList<>();
 
     AspExpr(int n) {
         super(n);
@@ -19,17 +15,26 @@ public class AspExpr extends AspSyntax {
 
     public static AspExpr parse(Scanner s) {
         enterParser("expr");
-
-        // -- Must be changed in part 2:
-        AspExpr ae = null;
-
+        AspExpr ae = new AspExpr(s.curLineNum());
+        while (true) {
+            ae.andTests.add(AspAndTests.parse(s));
+            if(s.curToken().kind != TokenKind.orToken)
+                break;
+            skip(s, TokenKind.orToken);
+        }
         leaveParser("expr");
         return ae;
     }
 
     @Override
     public void prettyPrint() {
-        // -- Must be changed in part 2:
+        int nPrinted = 0;
+        for (AspAndTests at : andTests) {
+            if (nPrinted > 0)
+                prettyWrite(" and ");
+            at.prettyPrint();
+            ++nPrinted;
+        }
     }
 
     @Override
