@@ -75,6 +75,10 @@ public class Scanner {
 
 		// -- Must be changed in part 1:
 		if (line == null) {
+			while (0 < indents.peek()) {
+				indents.pop();
+				curLineTokens.add(new Token(dedentToken, curLineNum()));
+			}
 			curLineTokens.add(new Token(eofToken, curLineNum()));
 		} else {
 			String s = expandLeadingTabs(line);
