@@ -1,3 +1,11 @@
+package no.uio.ifi.asp.parser;
+
+import java.util.ArrayList;
+import no.uio.ifi.asp.main.*;
+import no.uio.ifi.asp.runtime.*;
+import no.uio.ifi.asp.scanner.*;
+import static no.uio.ifi.asp.scanner.TokenKind.*;
+
 class AspWhileStmt extends AspCompoundStmt {
     AspExpr test;
     AspSuite body;
@@ -8,10 +16,21 @@ class AspWhileStmt extends AspCompoundStmt {
 
     static AspWhileStmt parse(Scanner s) {
         AspWhileStmt aws = new AspWhileStmt(s.curLineNum());
-        skip(s, whileToken);
+        skip(s, TokenKind.whileToken);
         aws.test = AspExpr.parse(s);
-        skip(s, colonToken);
+        skip(s, TokenKind.colonToken);
         aws.body = AspSuite.parse(s);
         return aws;
+    }
+
+    @Override
+    public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
+        // -- Must be changed in part 4:
+        return null;
+    }
+
+    @Override
+    void prettyPrint() {
+        
     }
 }
