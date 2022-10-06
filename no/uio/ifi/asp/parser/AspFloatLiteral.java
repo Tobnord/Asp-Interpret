@@ -13,6 +13,12 @@ public class AspFloatLiteral extends AspAtom {
         super(n);
     }
 
+    static AspFloatLiteral parse(Scanner s) {
+        AspFloatLiteral afl = new AspFloatLiteral(s.curLineNum());
+        skip(s, TokenKind.floatToken);
+        return afl;
+    }
+
     @Override
     void prettyPrint(){
         

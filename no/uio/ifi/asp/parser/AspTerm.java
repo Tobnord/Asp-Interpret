@@ -7,7 +7,7 @@ import no.uio.ifi.asp.scanner.*;
 import static no.uio.ifi.asp.scanner.TokenKind.*;
 
 public class AspTerm extends AspSyntax{
-    ArrayList<AspTermOprTest> termOprTests = new ArrayList<>();
+    ArrayList<no.uio.ifi.asp.parser.AspTermOprTest> termOprTests = new ArrayList<>();
 
     AspTerm(int n) {
         super(n);

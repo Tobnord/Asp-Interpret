@@ -12,11 +12,16 @@ public class AspStringLiteral extends AspAtom {
         super(n);
     }
 
-    @Override
-    void prettyPrint() {
-        
+    static AspStringLiteral parse(Scanner s) {
+        AspStringLiteral asl = new AspStringLiteral(s.curLineNum());
+        skip(s, TokenKind.stringToken);
+        return asl;
     }
     
+    @Override
+    void prettyPrint(){
+        prettyWrite(" string ");
+    }
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
         // -- Must be changed in part 4:

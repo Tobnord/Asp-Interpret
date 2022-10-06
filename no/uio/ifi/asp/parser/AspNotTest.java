@@ -13,9 +13,9 @@ public class AspNotTest extends AspSyntax{
     }
 
     static AspNotTest parse(Scanner s) {
-        enterParser("Not test");
+        enterParser("not test");
         AspNotTest ant = new AspNotTest(s.curLineNum());
-        
+        leaveParser("not test");
         return ant;
     }
 

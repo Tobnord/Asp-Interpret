@@ -31,7 +31,7 @@ public class AspExpr extends AspSyntax {
         int nPrinted = 0;
         for (AspAndTests at : andTests) {
             if (nPrinted > 0)
-                prettyWrite(" and ");
+                prettyWrite(" expr ");
             at.prettyPrint();
             ++nPrinted;
         }

@@ -11,10 +11,16 @@ public class AspIntegerLiteral extends AspAtom{
     AspIntegerLiteral(int n) {
         super(n);
     }
+
+    static AspIntegerLiteral parse(Scanner s) {
+        AspIntegerLiteral ai = new AspIntegerLiteral(s.curLineNum());
+        skip(s, TokenKind.integerToken);
+        return ai;
+    }
     
     @Override
     void prettyPrint(){
-        
+        prettyWrite(" int ");
     }
 
     @Override

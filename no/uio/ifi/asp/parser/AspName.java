@@ -16,13 +16,14 @@ public class AspName extends AspAtom{
     static AspName parse(Scanner s) {
         AspName an = new AspName(s.curLineNum());
         skip(s, TokenKind.nameToken);
-        an.name = AspName.parse(s);
         return an;
     }
 
     @Override
     void prettyPrint(){
-
+            prettyWrite(" name ");
     }
 
 }
+
+

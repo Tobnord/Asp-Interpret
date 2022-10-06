@@ -11,8 +11,9 @@ public abstract class AspPrimarySuffix extends AspSyntax {
     AspPrimarySuffix(int n) {
         super(n);
     }
-    
-    AspPrimarySuffix(int n) {
-        super(n);
+
+    @Override
+    void prettyPrint(){
+        
     }
 }

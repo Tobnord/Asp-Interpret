@@ -15,11 +15,13 @@ class AspWhileStmt extends AspCompoundStmt {
     }
 
     static AspWhileStmt parse(Scanner s) {
+        enterParser("while stmt");
         AspWhileStmt aws = new AspWhileStmt(s.curLineNum());
         skip(s, TokenKind.whileToken);
         aws.test = AspExpr.parse(s);
         skip(s, TokenKind.colonToken);
         aws.body = AspSuite.parse(s);
+        leaveParser("while stmt");
         return aws;
     }
 
