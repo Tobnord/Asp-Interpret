@@ -7,35 +7,39 @@ import no.uio.ifi.asp.scanner.*;
 import static no.uio.ifi.asp.scanner.TokenKind.*;
 
 public class AspTerm extends AspSyntax{
-    ArrayList<no.uio.ifi.asp.parser.AspTermOprTest> termOprTests = new ArrayList<>();
+    ArrayList<AspTermOpr> termOprTests = new ArrayList<>();
+    ArrayList<AspFactor> factorTests = new ArrayList<>();
 
     AspTerm(int n) {
         super(n);
     }
 
     static AspTerm parse(Scanner s) {
-        enterParser("term test");
-        AspTerm at= new AspTerm(s.curLineNum());
+        enterParser("term");
+
+        AspTerm at = new AspTerm(s.curLineNum());
+
         while (true) {
-            at.termOprTests.add(AspTerm.parse(s));
-            //IDK WHAT TOKENS TO MAKE HERE
-            // if (s.curToken().kind != TokenKind.WHATToken)
-            //     break;
-            // skip(s, TokenKind.WHATToken);
+            at.factorTests.add(AspFactor.parse(s));
+            if (s.curToken().kind != TokenKind.plusToken && s.curToken().kind != TokenKind.minusToken) {
+                break;
+            }
+            at.termOprTests.add(AspTermOpr.parse(s));
         }
-        leaveParser("term test");
+
+        leaveParser("term");
         return at;
     }
 
     @Override
     public void prettyPrint() {
-        int nPrinted = 0;
-        for (AspTerm at : termOprTests) {
-            if (nPrinted > 0)
-                prettyWrite(" and ");
-            at.prettyPrint();
-            ++nPrinted;
-        }
+        // int nPrinted = 0;
+        // for (AspTermOpr ato : termOprTests) {
+        //     if (nPrinted > 0)
+        //         prettyWrite(" and ");
+        //     ato.prettyPrint();
+        //     ++nPrinted;
+        // }
     }
 
     @Override

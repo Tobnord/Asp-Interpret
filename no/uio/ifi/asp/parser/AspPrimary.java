@@ -7,9 +7,28 @@ import no.uio.ifi.asp.scanner.*;
 import static no.uio.ifi.asp.scanner.TokenKind.*;
 
 public class AspPrimary extends AspSyntax {
+    ArrayList<AspAtom> atomTests = new ArrayList<>();
+    ArrayList<AspPrimarySuffix> primarySuffixTests = new ArrayList<>();
 
     AspPrimary(int n) {
         super(n);
+    }
+
+    public static AspPrimary parse(Scanner s) {
+        enterParser("primary");
+        AspPrimary ap = new AspPrimary(s.curLineNum());
+        ap.atomTests.add(AspAtom.parse(s));
+
+        while(true) {
+            if (s.curToken().kind != TokenKind.leftParToken && s.curToken().kind != TokenKind.leftBracketToken) {
+                break;
+            }
+
+            ap.primarySuffixTests.add(AspPrimarySuffix.parse(s));
+        }
+
+        leaveParser("primary");
+        return ap;
     }
 
     @Override

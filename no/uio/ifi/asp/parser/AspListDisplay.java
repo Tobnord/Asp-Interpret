@@ -29,7 +29,7 @@ public class AspListDisplay extends AspAtom {
 
                 ald.expressionList.add(AspExpr.parse(s));
 
-                if (s.curToken().kind != TokenKind.rightBracketToken) {
+                if (s.curToken().kind == TokenKind.rightBracketToken) {
                     break;
                 }
             }
@@ -48,7 +48,7 @@ public class AspListDisplay extends AspAtom {
             ae.prettyPrint();
 
             ++nPrinted;
-            if (nPrinted < dictDisplayHashMap.size()) {
+            if (nPrinted < expressionList.size()) {
                 prettyWrite(", ");
             }
         }

@@ -12,6 +12,24 @@ public abstract class AspPrimarySuffix extends AspSyntax {
         super(n);
     }
 
+    static AspPrimarySuffix parse(Scanner s) {
+        AspPrimarySuffix aps = null;
+
+        if (s.curToken().kind == TokenKind.leftParToken) {
+            aps = AspArguments.parse(s);
+
+        }
+        else if (s.curToken().kind == TokenKind.leftBracketToken) {
+            aps = AspSubscriptions.parse(s);
+        }
+        else {
+            parserError("Expected a primarySuffix but found a " +
+                        s.curToken().kind + "!", s.curLineNum());
+        }
+
+        return aps;
+    }
+
     @Override
     void prettyPrint(){
         

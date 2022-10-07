@@ -16,11 +16,11 @@ public class AspBooleanLiteral extends AspAtom {
     static AspBooleanLiteral parse(Scanner s) {
         AspBooleanLiteral abl = new AspBooleanLiteral(s.curLineNum());
         if (s.curToken().kind == TokenKind.trueToken) {
-            skip(s, TokenKind.trueToken)
+            skip(s, TokenKind.trueToken);
             abl.isTrueToken = true;
         }
         else if (s.curToken().kind == TokenKind.falseToken) {
-            skip(s, TokenKind.falseToken)
+            skip(s, TokenKind.falseToken);
             abl.isFalseToken = true;
         }
         return abl;
@@ -29,10 +29,10 @@ public class AspBooleanLiteral extends AspAtom {
     @Override
     void prettyPrint(){
         if (isTrueToken) {
-            prettyPrint(" true ");
+            prettyWrite(" true ");
         }
         else if (isFalseToken) {
-            prettyPrint(" false ");
+            prettyWrite(" false ");
         }
     }
 
