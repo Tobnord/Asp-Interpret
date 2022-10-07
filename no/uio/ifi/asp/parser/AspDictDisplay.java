@@ -37,7 +37,7 @@ public class AspDictDisplay extends AspAtom {
 
                 add.dictDisplayHashMap.put(stringLiteral, expression);
 
-                if (s.curToken().kind != TokenKind.rightBraceToken) {
+                if (s.curToken().kind == TokenKind.rightBraceToken) {
                     break;
                 }
             }
@@ -46,7 +46,7 @@ public class AspDictDisplay extends AspAtom {
         skip(s, TokenKind.rightBraceToken);
 
         leaveParser("dict display");
-        return ald;
+        return add;
     }
 
     @Override

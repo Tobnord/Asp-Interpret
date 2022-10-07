@@ -200,7 +200,6 @@ public class Scanner {
 		stringUnderConstruction = true;
 
 		for (int i = startIndex + 1; i < chars.length; i++) {
-			System.out.print(stringLiteral + " " + chars[i]);
 			stopIndex = i;
 
 			if (chars[i] == quote) {
@@ -344,20 +343,16 @@ public class Scanner {
 	private void indentHandling(String s) {
 
 		String currentString = s;
-		System.out.println("|" + s + "|");
 
 		if (s.isBlank()) {
-			System.out.println("-- blank");
 			return;
 		} else if (s.contains("#")) {
 			String s2 = s.substring(0, s.indexOf("#"));
 
 			if (s2.isBlank()) {
-				System.out.println("-- comment");
 				return;
 			} else {
 				currentString = s2;
-				System.out.println("-- code before comment");
 			}
 		}
 

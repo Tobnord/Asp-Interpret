@@ -8,27 +8,36 @@ import static no.uio.ifi.asp.scanner.TokenKind.*;
 
 public class AspArguments extends AspPrimarySuffix {
 
+    ArrayList<AspExpr> exprTests = new ArrayList<>();
+
     AspArguments(int n) {
         super(n);
     }
-    // ArrayList<AspArguments> ArgumentTests = new ArrayList<>();
+
     
-    // AspArgument(int n){
-    //     super(n);
-    // }
+    static AspArguments parse(Scanner s) {
+        enterParser("argument");
+        AspArguments aa = new AspArguments(s.curLineNum());
+
+        skip(s, TokenKind.leftParToken);
+        
+        if (s.curToken().kind != TokenKind.rightParToken) {
+
+            while (true) {
+                aa.exprTests.add(AspExpr.parse(s));
     
-    // static AspArguments parse(Scanner s) {
-    //     enterParser("argument test");
-    //     AspArgument arg = new AspArgument(s.curLineNum());
-    //     while (true) {
-    //         arg.ArgumentTests.add(AspArgument.parse(s));
-    //         if (s.curToken().kind != TokenKind.ArgumentToken)
-    //             break;
-    //         skip(s, TokenKind.ArgumentToken);
-    //     }
-    //     leaveParser("argument test");
-    //     return arg;
-    // }
+                if (s.curToken().kind == TokenKind.rightParToken) {
+                    break;
+                }
+    
+                skip(s, TokenKind.commaToken);            
+            }
+        }
+
+        skip(s, TokenKind.rightParToken);
+        leaveParser("argument");
+        return aa;
+    }
 
     @Override
     void prettyPrint(){
