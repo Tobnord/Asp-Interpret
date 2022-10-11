@@ -14,11 +14,14 @@ public class AspSmallStmtList extends AspStmt {
     }
 
     static AspSmallStmtList parse(Scanner s) {
-        enterParser("small statement list");
+        enterParser("small stmt list");
         AspSmallStmtList assl = new AspSmallStmtList(s.curLineNum());
 
         while(true) {
             assl.smallStmtTest.add(AspSmallStmt.parse(s));
+            if (s.curToken().kind == TokenKind.newLineToken) {
+                break;
+            }
             skip(s, TokenKind.semicolonToken);
             if (s.curToken().kind == TokenKind.newLineToken) {
                 break;
@@ -26,7 +29,7 @@ public class AspSmallStmtList extends AspStmt {
         }
         skip(s, TokenKind.newLineToken);
 
-        leaveParser("small statement list");
+        leaveParser("small stmt list");
         return assl;
     }
 
