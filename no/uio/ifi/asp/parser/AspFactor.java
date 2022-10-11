@@ -21,20 +21,18 @@ public class AspFactor extends AspSyntax {
 
 
         while(true) {
-            if (s.curToken().kind == TokenKind.plusToken || s.curToken().kind == TokenKind.minusToken) {
+            if (s.isFactorPrefix()) {
                 af.factorPrefixTests.add(AspFactorPrefix.parse(s));
             }
 
             af.primaryTests.add(AspPrimary.parse(s));
 
-            if (s.curToken().kind != TokenKind.plusToken && s.curToken().kind != TokenKind.minusToken) {
+            if (s.isFactorOpr() == false) {
                 break;
             }
 
             af.factorOprTests.add(AspFactorOpr.parse(s));
         }
-
-        skip(s, TokenKind.rightBracketToken);
 
         leaveParser("factor");
         return af;

@@ -13,6 +13,7 @@ public abstract class AspPrimarySuffix extends AspSyntax {
     }
 
     static AspPrimarySuffix parse(Scanner s) {
+        enterParser("primary suffix");
         AspPrimarySuffix aps = null;
 
         if (s.curToken().kind == TokenKind.leftParToken) {
@@ -26,7 +27,7 @@ public abstract class AspPrimarySuffix extends AspSyntax {
             parserError("Expected a primarySuffix but found a " +
                         s.curToken().kind + "!", s.curLineNum());
         }
-
+        leaveParser("primary suffix");
         return aps;
     }
 

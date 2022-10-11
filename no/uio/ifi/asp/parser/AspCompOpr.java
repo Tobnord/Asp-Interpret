@@ -19,8 +19,6 @@ public class AspCompOpr extends AspSyntax{
 
         enterParser("comparison orerator");
 
-        
-
         switch (s.curToken().kind) {
 
             case greaterToken:

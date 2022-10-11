@@ -13,17 +13,6 @@ public class AspComparison extends AspSyntax {
     ArrayList<AspTerm> termTests = new ArrayList<>();
     ArrayList<AspCompOpr> CompOprTests = new ArrayList<>();
     
-    static List<TokenKind> compOprTokenlist = new ArrayList<>(
-        Arrays.asList(
-            TokenKind.greaterEqualToken,
-            TokenKind.lessEqualToken,
-            TokenKind.doubleEqualToken,
-            TokenKind.notEqualToken,
-            TokenKind.lessToken,
-            TokenKind.greaterToken
-        )
-    );
-
     AspComparison(int n) {
         super(n);
     }
@@ -35,7 +24,7 @@ public class AspComparison extends AspSyntax {
 
         while (true) {
             ac.termTests.add(AspTerm.parse(s));
-            if (compOprTokenlist.contains(s.curToken().kind)) {
+            if (s.isCompOpr() == false) {
                 break;
             }
             ac.CompOprTests.add(AspCompOpr.parse(s));

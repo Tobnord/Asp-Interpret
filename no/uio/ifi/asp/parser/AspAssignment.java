@@ -8,8 +8,35 @@ import static no.uio.ifi.asp.scanner.TokenKind.*;
 
 public class AspAssignment extends AspSmallStmt {
 
+    AspName name;
+    ArrayList<AspSubscriptions> subscriptionsTests = new ArrayList<>();
+    AspExpr expr;
+
     AspAssignment(int n) {
         super(n);
+    }
+
+    static AspAssignment parse(Scanner s) {
+        enterParser("assignment");
+        AspAssignment aa = new AspAssignment(s.curLineNum());
+
+        aa.name = AspName.parse(s);
+
+        if (s.curToken().kind != TokenKind.equalToken) {
+            while(true) {
+                aa.subscriptionsTests.add(AspSubscriptions.parse(s));
+                if (s.curToken().kind == TokenKind.equalToken) {
+                    break;
+                }
+            }
+        }
+        
+        skip(s, TokenKind.equalToken);
+
+        aa.expr = AspExpr.parse(s);
+
+        leaveParser("assignment");
+        return aa;
     }
 
     @Override

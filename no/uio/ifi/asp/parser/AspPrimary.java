@@ -7,7 +7,7 @@ import no.uio.ifi.asp.scanner.*;
 import static no.uio.ifi.asp.scanner.TokenKind.*;
 
 public class AspPrimary extends AspSyntax {
-    ArrayList<AspAtom> atomTests = new ArrayList<>();
+    AspAtom atomTest;
     ArrayList<AspPrimarySuffix> primarySuffixTests = new ArrayList<>();
 
     AspPrimary(int n) {
@@ -17,7 +17,8 @@ public class AspPrimary extends AspSyntax {
     public static AspPrimary parse(Scanner s) {
         enterParser("primary");
         AspPrimary ap = new AspPrimary(s.curLineNum());
-        ap.atomTests.add(AspAtom.parse(s));
+
+        ap.atomTest = AspAtom.parse(s);
 
         while(true) {
             if (s.curToken().kind != TokenKind.leftParToken && s.curToken().kind != TokenKind.leftBracketToken) {

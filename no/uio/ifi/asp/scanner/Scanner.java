@@ -431,25 +431,63 @@ public class Scanner {
 	public boolean isCompOpr() {
 		TokenKind k = curToken().kind;
 		// -- Must be changed in part 2:
-		return false;
+		switch(k) {
+			case lessToken:
+				return true;
+			case doubleEqualToken:
+				return true;
+			case greaterEqualToken:
+				return true;
+			case lessEqualToken:
+				return true;
+			case notEqualToken:
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	public boolean isFactorPrefix() {
 		TokenKind k = curToken().kind;
 		// -- Must be changed in part 2:
-		return false;
+		switch(k) {
+			case plusToken:
+				return true;
+			case minusToken:
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	public boolean isFactorOpr() {
 		TokenKind k = curToken().kind;
 		// -- Must be changed in part 2:
-		return false;
+		switch(k) {
+			case astToken:
+				return true;
+			case slashToken:
+				return true;
+			case percentToken:
+				return true;
+			case doubleSlashToken:
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	public boolean isTermOpr() {
 		TokenKind k = curToken().kind;
 		// -- Must be changed in part 2:
-		return false;
+		switch(k) {
+			case plusToken:
+				return true;
+			case minusToken:
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	public boolean anyEqualToken() {

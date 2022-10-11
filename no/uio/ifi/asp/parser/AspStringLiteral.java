@@ -13,15 +13,17 @@ public class AspStringLiteral extends AspAtom {
     }
 
     static AspStringLiteral parse(Scanner s) {
+        enterParser("string literal");
         AspStringLiteral asl = new AspStringLiteral(s.curLineNum());
         skip(s, TokenKind.stringToken);
+        leaveParser("string literal");
         return asl;
     }
     
     @Override
     void prettyPrint(){
-        prettyWrite(" string ");
     }
+
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
         // -- Must be changed in part 4:
