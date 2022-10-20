@@ -30,6 +30,8 @@ public class AspSuite extends AspSyntax {
                     break;
                 }
             }
+
+            skip(s, TokenKind.dedentToken);
         }
         else {
             smallStmtList = AspSmallStmtList.parse(s);

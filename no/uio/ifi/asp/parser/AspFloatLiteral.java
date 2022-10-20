@@ -14,8 +14,10 @@ public class AspFloatLiteral extends AspAtom {
     }
 
     static AspFloatLiteral parse(Scanner s) {
+        enterParser("float literal");
         AspFloatLiteral afl = new AspFloatLiteral(s.curLineNum());
         skip(s, TokenKind.floatToken);
+        leaveParser("float literal");
         return afl;
     }
 

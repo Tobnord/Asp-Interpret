@@ -6,32 +6,37 @@ import no.uio.ifi.asp.runtime.*;
 import no.uio.ifi.asp.scanner.*;
 import static no.uio.ifi.asp.scanner.TokenKind.*;
 public class AspBooleanLiteral extends AspAtom {
-    boolean isTrueToken = false;
-    boolean isFalseToken = false;
+    TokenKind booleanLiteral;
 
     AspBooleanLiteral(int n) {
         super(n);
     }
 
     static AspBooleanLiteral parse(Scanner s) {
+        enterParser("boolean literal");
         AspBooleanLiteral abl = new AspBooleanLiteral(s.curLineNum());
         if (s.curToken().kind == TokenKind.trueToken) {
             skip(s, TokenKind.trueToken);
-            abl.isTrueToken = true;
+            abl.booleanLiteral = TokenKind.trueToken;
         }
         else if (s.curToken().kind == TokenKind.falseToken) {
             skip(s, TokenKind.falseToken);
-            abl.isFalseToken = true;
+            abl.booleanLiteral = TokenKind.falseToken;
         }
+        else {
+            abl.booleanLiteral = null;
+            test(s, TokenKind.trueToken, TokenKind.falseToken);
+        }
+        leaveParser("boolean literal");
         return abl;
     }
 
     @Override
     void prettyPrint(){
-        if (isTrueToken) {
+        if (booleanLiteral == TokenKind.trueToken) {
             prettyWrite(" true ");
         }
-        else if (isFalseToken) {
+        else if (booleanLiteral == TokenKind.falseToken) {
             prettyWrite(" false ");
         }
     }

@@ -12,6 +12,7 @@ public abstract class AspCompoundStmt extends AspStmt {
     }
 
     static AspCompoundStmt parse(Scanner s) {
+        enterParser("compound stmt");
         AspCompoundStmt acs = null;
         switch (s.curToken().kind) {
             case forToken:
@@ -30,6 +31,7 @@ public abstract class AspCompoundStmt extends AspStmt {
                 parserError("Expected a compound stmt but found a " +
                         s.curToken().kind + "!", s.curLineNum());
         }
+        leaveParser("compound stmt");
         return acs;
     }
 
