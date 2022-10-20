@@ -1,9 +1,13 @@
 package no.uio.ifi.asp.parser;
 
+import java.util.ArrayList;
+
 import no.uio.ifi.asp.runtime.*;
 import no.uio.ifi.asp.scanner.*;
 
 public abstract class AspAtom extends AspSyntax {
+
+    static ArrayList<AspAtom> aaArrayList = new ArrayList<>();
 
     AspAtom(int n) {
         super(n);
@@ -47,13 +51,16 @@ public abstract class AspAtom extends AspSyntax {
                 parserError("Expected an expression atom but found a " +
                         s.curToken().kind + "!", s.curLineNum());
         }
+        aaArrayList.add(aa);
         leaveParser("atom");
         return aa;
     }
 
     @Override
     void prettyPrint(){
-        
+        AspAtom aa = aaArrayList.get(0);
+        aa.prettyPrint();
+        aaArrayList.remove(0);
     }
 
     @Override

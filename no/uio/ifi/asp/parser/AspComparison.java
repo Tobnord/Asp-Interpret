@@ -33,11 +33,13 @@ public class AspComparison extends AspSyntax {
     @Override
     void prettyPrint() {
         int nPrinted = 0;
+        int counter = 0;
         for (AspTerm at : termTests) {
             if (nPrinted > 0)
-                prettyWrite(" comparison ");
+                this.CompOprTests.get(counter-1).prettyPrint();
             at.prettyPrint();
             ++nPrinted;
+            counter++;
         }
     }
     

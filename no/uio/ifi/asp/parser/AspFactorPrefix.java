@@ -14,26 +14,26 @@ public class AspFactorPrefix extends AspSyntax {
 
     static AspFactorPrefix parse(Scanner s) {
         enterParser("factor prefix");
-        AspFactorPrefix ato = new AspFactorPrefix(s.curLineNum());
+        AspFactorPrefix afp = new AspFactorPrefix(s.curLineNum());
         if (s.curToken().kind == plusToken) {
             skip(s, TokenKind.plusToken);
-            ato.isPlusToken = true;
+            afp.isPlusToken = true;
         }
         else if (s.curToken().kind == minusToken) {
             skip(s, TokenKind.minusToken);
-            ato.isPlusToken = false;
+            afp.isPlusToken = false;
         }
         leaveParser("factor prefix");
-        return ato;
+        return afp;
     }
 
     @Override
     void prettyPrint() {
         if(isPlusToken) {
-            prettyWrite(" + ");
+            prettyWrite("+");
         }
         else {
-            prettyWrite(" - ");
+            prettyWrite("-");
         }
     }
     

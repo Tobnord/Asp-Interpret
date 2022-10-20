@@ -48,6 +48,7 @@ public class AspDictDisplay extends AspAtom {
 
     @Override
     void prettyPrint(){
+        prettyWrite("{");
         int nPrinted = 0;
         for (Map.Entry<AspStringLiteral, AspExpr> entry : dictDisplayHashMap.entrySet()) {
             entry.getKey().prettyPrint();
@@ -59,6 +60,7 @@ public class AspDictDisplay extends AspAtom {
                 prettyWrite(", ");
             }
         }
+        prettyWrite("}");
     }
     
     @Override

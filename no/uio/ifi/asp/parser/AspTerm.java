@@ -31,13 +31,16 @@ public class AspTerm extends AspSyntax{
 
     @Override
     public void prettyPrint() {
-        // int nPrinted = 0;
-        // for (AspTermOpr ato : termOprTests) {
-        //     if (nPrinted > 0)
-        //         prettyWrite(" and ");
-        //     ato.prettyPrint();
-        //     ++nPrinted;
-        // }
+        int counter = 0;
+        for (AspFactor factor : factorTests) {
+            factor.prettyPrint();
+            
+            if (counter < this.termOprTests.size()) {
+               
+                this.termOprTests.get(counter).prettyPrint();
+            }
+            counter++;
+        }
     }
 
     @Override

@@ -31,8 +31,19 @@ public class AspGlobalStmt extends AspSmallStmt {
 
     
     @Override
-    void prettyPrint(){
+    void prettyPrint() {
         
+        prettyWrite("global ");
+
+        int counter = 0;
+        for (AspName name : nameTests) {
+            name.prettyPrint();
+            counter++;
+            if(counter < nameTests.size()){
+                prettyWrite(", ");
+            }
+            
+        }
     }
 
     @Override

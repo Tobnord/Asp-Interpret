@@ -28,7 +28,7 @@ public class AspTermOpr extends AspSyntax {
 
     @Override
     void prettyPrint() {
-        if(isPlusToken) {
+        if(this.isPlusToken) {
             prettyWrite(" + ");
         }
         else {

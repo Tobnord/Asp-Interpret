@@ -32,7 +32,10 @@ public class AspPrimary extends AspSyntax {
 
     @Override
     void prettyPrint() {
-        
+        this.atomTest.prettyPrint();
+        for (AspPrimarySuffix aspPrimarySuffix : this.primarySuffixTests) {
+            aspPrimarySuffix.prettyPrint();
+        }
     }
     
     @Override

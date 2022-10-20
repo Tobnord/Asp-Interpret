@@ -3,8 +3,9 @@ package no.uio.ifi.asp.parser;
 import no.uio.ifi.asp.runtime.*;
 import no.uio.ifi.asp.scanner.*;
 
-public abstract class AspStmt extends AspSyntax{
+public abstract class AspStmt extends AspSyntax {
 
+    static AspStmt stmt;
 
     AspStmt(int n) {
         super(n);
@@ -24,13 +25,14 @@ public abstract class AspStmt extends AspSyntax{
         else {
             as = AspSmallStmtList.parse(s);
         }
+        stmt = as;
         leaveParser("stmt");
         return as;
     }
 
     @Override
     void prettyPrint() {
-        
+        stmt.prettyPrint();
     }
 
     @Override

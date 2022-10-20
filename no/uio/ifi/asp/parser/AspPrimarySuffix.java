@@ -1,8 +1,12 @@
 package no.uio.ifi.asp.parser;
 
+import java.util.ArrayList;
+
 import no.uio.ifi.asp.scanner.*;
 
 public abstract class AspPrimarySuffix extends AspSyntax {
+    static ArrayList<AspPrimarySuffix> primarySuffixList = new ArrayList<>();
+    
 
     AspPrimarySuffix(int n) {
         super(n);
@@ -14,7 +18,6 @@ public abstract class AspPrimarySuffix extends AspSyntax {
 
         if (s.curToken().kind == TokenKind.leftParToken) {
             aps = AspArguments.parse(s);
-
         }
         else if (s.curToken().kind == TokenKind.leftBracketToken) {
             aps = AspSubscriptions.parse(s);
@@ -23,12 +26,15 @@ public abstract class AspPrimarySuffix extends AspSyntax {
             parserError("Expected a primarySuffix but found a " +
                         s.curToken().kind + "!", s.curLineNum());
         }
+        primarySuffixList.add(aps); 
         leaveParser("primary suffix");
         return aps;
     }
 
     @Override
     void prettyPrint(){
-        
+        AspPrimarySuffix aa = primarySuffixList.get(0);
+        aa.prettyPrint();
+        primarySuffixList.remove(0);
     }
 }

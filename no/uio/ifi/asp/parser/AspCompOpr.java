@@ -1,5 +1,7 @@
 package no.uio.ifi.asp.parser;
 
+import java.util.ArrayList;
+
 import no.uio.ifi.asp.runtime.*;
 import no.uio.ifi.asp.scanner.*;
 public class AspCompOpr extends AspSyntax{
@@ -60,7 +62,7 @@ public class AspCompOpr extends AspSyntax{
 
     @Override
     void prettyPrint(){
-        
+        prettyWrite(" " + this.compOprToken.toString() + " ");
     }
     
     @Override

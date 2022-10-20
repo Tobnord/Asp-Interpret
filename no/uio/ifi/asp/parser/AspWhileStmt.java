@@ -4,8 +4,8 @@ import no.uio.ifi.asp.runtime.*;
 import no.uio.ifi.asp.scanner.*;
 
 class AspWhileStmt extends AspCompoundStmt {
-    AspExpr test;
-    AspSuite body;
+    AspExpr expr;
+    AspSuite suite;
 
     AspWhileStmt(int n) {
         super(n);
@@ -15,9 +15,9 @@ class AspWhileStmt extends AspCompoundStmt {
         enterParser("while stmt");
         AspWhileStmt aws = new AspWhileStmt(s.curLineNum());
         skip(s, TokenKind.whileToken);
-        aws.test = AspExpr.parse(s);
+        aws.expr = AspExpr.parse(s);
         skip(s, TokenKind.colonToken);
-        aws.body = AspSuite.parse(s);
+        aws.suite = AspSuite.parse(s);
         leaveParser("while stmt");
         return aws;
     }
@@ -30,6 +30,9 @@ class AspWhileStmt extends AspCompoundStmt {
 
     @Override
     void prettyPrint() {
-        
+        prettyWrite("while ");
+        expr.prettyPrint();
+        prettyWrite(":");
+        suite.prettyPrint();
     }
 }

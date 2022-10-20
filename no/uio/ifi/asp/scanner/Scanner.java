@@ -434,6 +434,8 @@ public class Scanner {
 		switch(k) {
 			case lessToken:
 				return true;
+			case greaterToken:
+				return true;
 			case doubleEqualToken:
 				return true;
 			case greaterEqualToken:

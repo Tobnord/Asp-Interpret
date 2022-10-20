@@ -40,14 +40,37 @@ public class AspIfStmt extends AspCompoundStmt {
         return ais;
     }
 
+
+    @Override
+    void prettyPrint() {
+
+        prettyWrite( "if ");
+
+        int counter = 0;
+        for (AspSuite suite : suiteTests) {
+
+            if(counter > 0){
+                prettyWrite("elif ");
+            }
+
+            this.expr.prettyPrint();
+            prettyWrite(":");
+            suite.prettyPrint();
+            counter++;
+        }
+
+        if (this.elseSuite != null) {
+            prettyWrite("else");
+            this.elseSuite.prettyPrint();
+            prettyWrite(":");
+            this.elseSuite.prettyPrint();
+        }
+    }
+
+
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
         // -- Must be changed in part 4:
         return null;
-    }
-
-    @Override
-    void prettyPrint(){
-        
     }
 }

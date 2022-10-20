@@ -3,7 +3,11 @@ package no.uio.ifi.asp.parser;
 import no.uio.ifi.asp.scanner.*;
 import static no.uio.ifi.asp.scanner.TokenKind.*;
 
+import java.util.ArrayList;
+
 abstract class AspSmallStmt extends AspSyntax {
+    static ArrayList<AspSmallStmt> asArrayList = new ArrayList<>();
+    
     AspSmallStmt(int n) {
         super(n);
     }
@@ -22,7 +26,15 @@ abstract class AspSmallStmt extends AspSyntax {
             as = AspAssignment.parse(s);}
         else
             as = AspExprStmt.parse(s);
+        asArrayList.add(as);
         leaveParser("small stmt");
         return as;
+    }
+    
+    @Override
+    void prettyPrint() {
+        AspSmallStmt as = asArrayList.get(0);
+        as.prettyPrint();
+        asArrayList.remove(0);
     }
 }

@@ -1,9 +1,12 @@
 package no.uio.ifi.asp.parser;
 
+import java.util.ArrayList;
+
 import no.uio.ifi.asp.runtime.*;
 import no.uio.ifi.asp.scanner.*;
 
 public class AspFactorOpr extends AspSyntax{
+    
     TokenKind factorOprToken;
 
 
@@ -42,7 +45,6 @@ public class AspFactorOpr extends AspSyntax{
                 parserError("Expected a factorOpr but found a " +
                         s.curToken().kind + "!", s.curLineNum());
         }
-
         leaveParser("factor operator");
         return afo;
     }
@@ -50,7 +52,7 @@ public class AspFactorOpr extends AspSyntax{
 
     @Override
     void prettyPrint(){
-        
+        prettyWrite(" " + this.factorOprToken.toString() + " ");
     }
 
     @Override

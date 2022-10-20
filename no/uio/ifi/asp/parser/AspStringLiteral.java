@@ -5,6 +5,9 @@ import no.uio.ifi.asp.scanner.*;
 
 public class AspStringLiteral extends AspAtom {
 
+    String stringLiteral;
+
+
     AspStringLiteral(int n) {
         super(n);
     }
@@ -12,6 +15,7 @@ public class AspStringLiteral extends AspAtom {
     static AspStringLiteral parse(Scanner s) {
         enterParser("string literal");
         AspStringLiteral asl = new AspStringLiteral(s.curLineNum());
+        asl.stringLiteral = s.curToken().stringLit.toString();
         skip(s, TokenKind.stringToken);
         leaveParser("string literal");
         return asl;
@@ -19,6 +23,7 @@ public class AspStringLiteral extends AspAtom {
     
     @Override
     void prettyPrint(){
+        prettyWrite('"' + this.stringLiteral + '"');
     }
 
     @Override

@@ -27,12 +27,12 @@ public class AspExpr extends AspSyntax {
     @Override
     public void prettyPrint() {
         int nPrinted = 0;
-        for (AspAndTest at : andTests) {
+        for (AspAndTest aat : andTests) {
             if (nPrinted > 0)
-                prettyWrite(" expr ");
-            at.prettyPrint();
+                prettyWrite(" or ");
+            aat.prettyPrint();
             ++nPrinted;
-        }
+        } 
     }
 
     @Override

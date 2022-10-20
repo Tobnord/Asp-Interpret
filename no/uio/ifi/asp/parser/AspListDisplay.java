@@ -41,6 +41,9 @@ public class AspListDisplay extends AspAtom {
     
     @Override
     void prettyPrint() {
+
+        prettyWrite("[");
+
         int nPrinted = 0;
         for (AspExpr ae : expressionList) {
             ae.prettyPrint();
@@ -50,5 +53,7 @@ public class AspListDisplay extends AspAtom {
                 prettyWrite(", ");
             }
         }
+
+        prettyWrite("]");
     }
 }

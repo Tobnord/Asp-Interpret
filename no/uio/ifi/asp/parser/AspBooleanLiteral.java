@@ -31,10 +31,10 @@ public class AspBooleanLiteral extends AspAtom {
     @Override
     void prettyPrint(){
         if (booleanLiteral == TokenKind.trueToken) {
-            prettyWrite(" true ");
+            prettyWrite(" True");
         }
         else if (booleanLiteral == TokenKind.falseToken) {
-            prettyWrite(" false ");
+            prettyWrite(" False");
         }
     }
 

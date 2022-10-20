@@ -1,7 +1,11 @@
 package no.uio.ifi.asp.parser;
 
+import java.util.ArrayList;
+
 import no.uio.ifi.asp.scanner.*;
 public abstract class AspCompoundStmt extends AspStmt {
+
+    static ArrayList<AspCompoundStmt> acsArrayList = new ArrayList<>();
     
     AspCompoundStmt(int n) {
         super(n);
@@ -27,9 +31,15 @@ public abstract class AspCompoundStmt extends AspStmt {
                 parserError("Expected a compound stmt but found a " +
                         s.curToken().kind + "!", s.curLineNum());
         }
+        acsArrayList.add(acs);
         leaveParser("compound stmt");
         return acs;
     }
 
-    
+    @Override
+    void prettyPrint() {
+        AspCompoundStmt acs = acsArrayList.get(0);
+        acs.prettyPrint();
+        acsArrayList.remove(0);
+    }
 }
