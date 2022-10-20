@@ -13,8 +13,10 @@ public class AspNoneLiteral extends AspAtom {
     }
 
     static AspNoneLiteral parse(Scanner s) {
+        enterParser("none literal");
         AspNoneLiteral anl = new AspNoneLiteral(s.curLineNum());
         skip(s, TokenKind.noneToken);
+        leaveParser("none literal");
         return anl;
     }
     

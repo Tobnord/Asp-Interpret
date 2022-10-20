@@ -15,7 +15,7 @@ public class AspFactorPrefix extends AspSyntax {
 
 
     static AspFactorPrefix parse(Scanner s) {
-        enterParser("FactorPrefix");
+        enterParser("factor prefix");
         AspFactorPrefix ato = new AspFactorPrefix(s.curLineNum());
         if (s.curToken().kind == plusToken) {
             skip(s, TokenKind.plusToken);
@@ -25,7 +25,7 @@ public class AspFactorPrefix extends AspSyntax {
             skip(s, TokenKind.minusToken);
             ato.isPlusToken = false;
         }
-        leaveParser("FactorPrefix");
+        leaveParser("factor prefix");
         return ato;
     }
 
