@@ -5,7 +5,7 @@ import no.uio.ifi.asp.scanner.*;
 
 public class AspNotTest extends AspSyntax {
 
-    boolean notToken = false;
+    boolean withNot = false;
     AspComparison comparison;
 
     AspNotTest(int n) {
@@ -17,7 +17,7 @@ public class AspNotTest extends AspSyntax {
         AspNotTest ant = new AspNotTest(s.curLineNum());
 
         if (s.curToken().kind == TokenKind.notToken) {
-            ant.notToken = true;
+            ant.withNot = true;
             skip(s, TokenKind.notToken);
         }
 
@@ -29,7 +29,7 @@ public class AspNotTest extends AspSyntax {
 
     @Override
     void prettyPrint() {
-        if (notToken){
+        if (withNot){
             prettyWrite(" not ");
         }
         this.comparison.prettyPrint();
@@ -37,8 +37,14 @@ public class AspNotTest extends AspSyntax {
     
 
     @Override
-    public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        // -- Must be changed in part 4:
-        return null;
+    RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
+        System.out.println("EVAL: AspNot");
+        
+        RuntimeValue v = comparison.eval(curScope);
+        if (withNot) {
+            v = v.evalNot(this);
+        }
+        return v;
     }
+    
 }

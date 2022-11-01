@@ -3,6 +3,7 @@ package no.uio.ifi.asp.parser;
 import java.util.ArrayList;
 
 import no.uio.ifi.asp.scanner.*;
+import no.uio.ifi.asp.runtime.*;
 
 public abstract class AspPrimarySuffix extends AspSyntax {
     static ArrayList<AspPrimarySuffix> primarySuffixList = new ArrayList<>();
@@ -32,9 +33,16 @@ public abstract class AspPrimarySuffix extends AspSyntax {
     }
 
     @Override
-    void prettyPrint(){
+    void prettyPrint() {
         AspPrimarySuffix aa = primarySuffixList.get(0);
         aa.prettyPrint();
         primarySuffixList.remove(0);
+    }
+
+    @Override
+    RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
+        System.out.println("EVAL: Primary Suffix");
+        
+        return primarySuffixList.get(0).eval(curScope);
     }
 }
