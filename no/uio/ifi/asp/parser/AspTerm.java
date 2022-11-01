@@ -3,6 +3,7 @@ package no.uio.ifi.asp.parser;
 import java.util.ArrayList;
 import no.uio.ifi.asp.runtime.*;
 import no.uio.ifi.asp.scanner.*;
+import no.uio.ifi.asp.main.*;
 
 public class AspTerm extends AspSyntax{
     ArrayList<AspTermOpr> termOprTests = new ArrayList<>();
@@ -44,8 +45,22 @@ public class AspTerm extends AspSyntax{
     }
 
     @Override
-    public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        // -- Must be changed in part 4:
-        return null;
+    RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
+        System.out.println("EVAL: AspTerm");
+
+        RuntimeValue v = factorTests.get(0).eval(curScope);
+        for (int i = 1; i < factorTests.size(); ++i) {
+            TokenKind k = termOprTests.get(i-1).kind;
+            switch (k) {
+                case minusToken:
+                    v = v.evalSubtract(factorTests.get(i).eval(curScope), this); break;
+                case plusToken:
+                    v = v.evalAdd(factorTests.get(i).eval(curScope), this); break;
+                default:
+                    Main.panic("Illegal term operator: " + k + "!");
+            }
+        }
+        return v;
     }
+
 }

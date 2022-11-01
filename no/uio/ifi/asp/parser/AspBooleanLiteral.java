@@ -4,6 +4,7 @@ import no.uio.ifi.asp.runtime.*;
 import no.uio.ifi.asp.scanner.*;
 public class AspBooleanLiteral extends AspAtom {
     TokenKind booleanLiteral;
+    boolean value;
 
     AspBooleanLiteral(int n) {
         super(n);
@@ -15,10 +16,12 @@ public class AspBooleanLiteral extends AspAtom {
         if (s.curToken().kind == TokenKind.trueToken) {
             skip(s, TokenKind.trueToken);
             abl.booleanLiteral = TokenKind.trueToken;
+            abl.value = true;
         }
         else if (s.curToken().kind == TokenKind.falseToken) {
             skip(s, TokenKind.falseToken);
             abl.booleanLiteral = TokenKind.falseToken;
+            abl.value = false;
         }
         else {
             abl.booleanLiteral = null;
@@ -31,16 +34,16 @@ public class AspBooleanLiteral extends AspAtom {
     @Override
     void prettyPrint(){
         if (booleanLiteral == TokenKind.trueToken) {
-            prettyWrite(" True");
+            prettyWrite("True");
         }
         else if (booleanLiteral == TokenKind.falseToken) {
-            prettyWrite(" False");
+            prettyWrite("False");
         }
     }
 
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        // -- Must be changed in part 4:
-        return null;
+        System.out.println("EVAL: Boolean");
+        return new RuntimeBoolValue(value);
     }
 }

@@ -6,6 +6,7 @@ import static no.uio.ifi.asp.scanner.TokenKind.*;
 
 public class AspTermOpr extends AspSyntax {
     boolean isPlusToken = false;
+    TokenKind kind;
 
     AspTermOpr(int n) {
         super(n);
@@ -17,10 +18,12 @@ public class AspTermOpr extends AspSyntax {
         if (s.curToken().kind == plusToken) {
             skip(s, TokenKind.plusToken);
             ato.isPlusToken = true;
+            ato.kind = plusToken;
         }
         else if (s.curToken().kind == minusToken) {
             skip(s, TokenKind.minusToken);
             ato.isPlusToken = false;
+            ato.kind = minusToken;
         }
         leaveParser("term opr");
         return ato;
@@ -39,6 +42,7 @@ public class AspTermOpr extends AspSyntax {
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
         // -- Must be changed in part 4:
+        System.out.println("EVAL: TermOpr");
         return null;
     }
 }

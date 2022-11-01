@@ -8,6 +8,7 @@ import no.uio.ifi.asp.scanner.*;
 public abstract class AspAtom extends AspSyntax {
 
     static ArrayList<AspAtom> aaArrayList = new ArrayList<>();
+    TokenKind kind;
 
     AspAtom(int n) {
         super(n);
@@ -16,6 +17,7 @@ public abstract class AspAtom extends AspSyntax {
     static AspAtom parse(Scanner s) {
         enterParser("atom");
         AspAtom aa = null;
+        
         switch (s.curToken().kind) {
             case falseToken:
                 aa = AspBooleanLiteral.parse(s);
@@ -51,6 +53,7 @@ public abstract class AspAtom extends AspSyntax {
                 parserError("Expected an expression atom but found a " +
                         s.curToken().kind + "!", s.curLineNum());
         }
+        aa.kind = s.curToken().kind;
         aaArrayList.add(aa);
         leaveParser("atom");
         return aa;
@@ -65,7 +68,7 @@ public abstract class AspAtom extends AspSyntax {
 
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        // -- Must be changed in part 4:
-        return null;
+        System.out.println("EVAL: Atom");
+        return aaArrayList.get(0).eval(curScope);
     }
 }

@@ -1,12 +1,11 @@
 package no.uio.ifi.asp.parser;
 
-import java.util.ArrayList;
 
 import no.uio.ifi.asp.runtime.*;
 import no.uio.ifi.asp.scanner.*;
 public class AspCompOpr extends AspSyntax{
 
-    TokenKind compOprToken;
+    TokenKind kind;
 
     AspCompOpr(int n) {
         super(n);
@@ -21,32 +20,32 @@ public class AspCompOpr extends AspSyntax{
         switch (s.curToken().kind) {
 
             case greaterToken:
-                aco.compOprToken = s.curToken().kind;
+                aco.kind = s.curToken().kind;
                 skip(s, s.curToken().kind);
                 break;
 
             case lessToken:
-                aco.compOprToken = s.curToken().kind;
+                aco.kind = s.curToken().kind;
                 skip(s, s.curToken().kind);
                 break;
 
             case greaterEqualToken:
-                aco.compOprToken = s.curToken().kind;
+                aco.kind = s.curToken().kind;
                 skip(s, s.curToken().kind);
                 break;
 
             case lessEqualToken:
-                aco.compOprToken = s.curToken().kind;
+                aco.kind = s.curToken().kind;
                 skip(s, s.curToken().kind);
                 break;
 
             case doubleEqualToken:
-                aco.compOprToken = s.curToken().kind;
+                aco.kind = s.curToken().kind;
                 skip(s, s.curToken().kind);
                 break;
 
             case notEqualToken:
-                aco.compOprToken = s.curToken().kind;
+                aco.kind = s.curToken().kind;
                 skip(s, s.curToken().kind);
                 break;
                 
@@ -62,7 +61,7 @@ public class AspCompOpr extends AspSyntax{
 
     @Override
     void prettyPrint(){
-        prettyWrite(" " + this.compOprToken.toString() + " ");
+        prettyWrite(" " + this.kind.toString() + " ");
     }
     
     @Override

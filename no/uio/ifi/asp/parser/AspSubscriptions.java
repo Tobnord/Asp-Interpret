@@ -34,7 +34,7 @@ public class AspSubscriptions extends AspPrimarySuffix {
 
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        // -- Must be changed in part 4:
-        return null;
+        System.out.println("EVAL: Subscription");
+        return expr.eval(curScope);
     }
 }
