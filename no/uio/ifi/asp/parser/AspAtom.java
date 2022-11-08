@@ -68,7 +68,7 @@ public abstract class AspAtom extends AspSyntax {
 
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        System.out.println("EVAL: Atom");
+        //System.out.println("EVAL: Atom");
         return aaArrayList.get(0).eval(curScope);
     }
 }

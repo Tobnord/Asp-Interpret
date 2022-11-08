@@ -24,7 +24,7 @@ class AspWhileStmt extends AspCompoundStmt {
 
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        System.out.println("EVAL: AspWhile");
+        //System.out.println("EVAL: AspWhile");
         // -- Must be changed in part 4:
         return null;
     }

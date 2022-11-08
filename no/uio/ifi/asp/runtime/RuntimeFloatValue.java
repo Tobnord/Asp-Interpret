@@ -21,6 +21,14 @@ public class RuntimeFloatValue extends RuntimeValue {
     }
 
     @Override
+    public boolean getBoolValue(String what, AspSyntax where) {
+        if(floatValue == 0){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public RuntimeValue evalAdd(RuntimeValue v, AspSyntax where){
         if(v instanceof RuntimeIntValue || v instanceof RuntimeFloatValue) {
             return new RuntimeFloatValue(this.getFloatValue("float", where) + v.getFloatValue("float", where));

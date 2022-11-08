@@ -47,27 +47,40 @@ public class AspComparison extends AspSyntax {
 
     @Override
     RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        System.out.println("EVAL: comparison -->");
+        //System.out.println("EVAL: comparison -->");
         RuntimeValue v = termTests.get(0).eval(curScope);
+        RuntimeValue result = v;
+
         for (int i = 1; i < termTests.size(); ++i) {
             TokenKind k = CompOprTests.get(i-1).kind;
+
+            RuntimeValue v2 = termTests.get(i).eval(curScope);
+            
             switch (k) {
                 case greaterToken:
-                    v = v.evalGreater(termTests.get(i).eval(curScope), this); break;
+                    result = v.evalGreater(termTests.get(i).eval(curScope), this); break;
                 case lessToken:
-                    v = v.evalLess(termTests.get(i).eval(curScope), this); break;
+                    result = v.evalLess(termTests.get(i).eval(curScope), this); break;
                 case greaterEqualToken:
-                    v = v.evalGreaterEqual(termTests.get(i).eval(curScope), this); break;
+                    result = v.evalGreaterEqual(termTests.get(i).eval(curScope), this); break;
                 case lessEqualToken:
-                    v = v.evalLessEqual(termTests.get(i).eval(curScope), this); break;
+                    result = v.evalLessEqual(termTests.get(i).eval(curScope), this); break;
                 case doubleEqualToken:
-                    v = v.evalEqual(termTests.get(i).eval(curScope), this); break;
+                    result = v.evalEqual(termTests.get(i).eval(curScope), this);break;
                 case notEqualToken:
-                    v = v.evalNotEqual(termTests.get(i).eval(curScope), this); break;
+                    result = v.evalNotEqual(termTests.get(i).eval(curScope), this);break;
                 default:
+                    result = v;
                     Main.panic("Illegal term operator: " + k + "!");
             }
+
+            if (result.getBoolValue("comparison", this) == false) {
+                return result;
+            }
+            v = v2;
         }
-        return v;
+        
+        return result;
     }
+
 }

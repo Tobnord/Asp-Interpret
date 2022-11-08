@@ -57,7 +57,7 @@ public class AspArguments extends AspPrimarySuffix {
 
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        System.out.println("EVAL: Arguments");
+        //System.out.println("EVAL: Arguments");
 
         RuntimeValue v = exprTests.get(0).eval(curScope);
 

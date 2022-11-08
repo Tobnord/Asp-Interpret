@@ -41,7 +41,7 @@ public abstract class AspPrimarySuffix extends AspSyntax {
 
     @Override
     RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        System.out.println("EVAL: Primary Suffix");
+        //System.out.println("EVAL: Primary Suffix");
         
         return primarySuffixList.get(0).eval(curScope);
     }

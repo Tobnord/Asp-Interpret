@@ -59,16 +59,24 @@ public class AspFactor extends AspSyntax {
 
     @Override
     RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        System.out.println("EVAL: factor");
+        //System.out.println("EVAL: factor");
         
         RuntimeValue v = primaryTests.get(0).eval(curScope);
 
+        RuntimeValue v2 = v;
+        boolean skipped = false;
+
+
         for (int i = 0; i < primaryTests.size(); ++i) {
+            
+            if (i < primaryTests.size() - 1) {
+                v2 = primaryTests.get(i+1).eval(curScope);
+                skipped = true;
+            }
             
             if (i > 0) {
                 v = primaryTests.get(i).eval(curScope);
             }
-            
             if (factorPrefixTests.get(i) != null) {
                 TokenKind k = factorPrefixTests.get(i).kind;
                 switch (k) {
@@ -81,19 +89,31 @@ public class AspFactor extends AspSyntax {
                 }
             }
 
-            if(factorOprTests.size() < i) {
-                TokenKind f = factorOprTests.get(i).kind;
+            if(! factorOprTests.isEmpty()) {
+                TokenKind f;
+                if (i < factorOprTests.size()){
+                    f = factorOprTests.get(i).kind;
+                }
+                else {
+                    f = factorOprTests.get(i-1).kind;
+                }
                 switch (f) {
                     case astToken:
-                        v = v.evalMultiply(factorOprTests.get(i).eval(curScope), this); break;
+                        v = v.evalMultiply(v2, this); break;
                     case slashToken:
-                        v = v.evalDivide(factorOprTests.get(i).eval(curScope), this); break;
+                        v = v.evalDivide(v2, this); break;
                     case percentToken:
-                        v = v.evalModulo(factorOprTests.get(i).eval(curScope), this); break;
+                        v = v.evalModulo(v2, this); break;
                     case doubleSlashToken:
-                        v = v.evalIntDivide(factorOprTests.get(i).eval(curScope), this); break;
+                        v = v.evalIntDivide(v2, this); break;
                     default:
+                        v = v2;
                         Main.panic("Illegal factor operator: " + f + "!");
+                }
+                v2 = v;
+                if(skipped) {
+                    i++;
+                    skipped = false;
                 }
             }
         }

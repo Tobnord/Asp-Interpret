@@ -1,5 +1,6 @@
 package no.uio.ifi.asp.runtime;
 
+import java.util.Collections;
 import java.util.Map;
 
 import no.uio.ifi.asp.parser.AspSyntax;
@@ -27,35 +28,52 @@ public class RuntimeDictionaryValue extends RuntimeValue{
         runtimeError("Type error: " + what + " is not a Boolean!", where);
         return false; // Required by the compiler!
     }
+    
 
     @Override
     public RuntimeValue evalEqual(RuntimeValue v, AspSyntax where) {
         if (v instanceof RuntimeNoneValue) {
             return new RuntimeBoolValue(false);
         }
-
+        if (v instanceof RuntimeDictionaryValue){
+            RuntimeDictionaryValue vDictValue = (RuntimeDictionaryValue)v;
+            if (this.dictValue.equals(vDictValue.dictValue)){
+                return new RuntimeBoolValue(true);
+            }
+            return new RuntimeBoolValue(false);
+        }
         runtimeError("Type error for ==.", where);
         return null; // Required by the compiler
     }
 
-    @Override
-    public RuntimeValue evalNot(AspSyntax where) {
-        return new RuntimeDictionaryValue(null);
-    }
 
     @Override
     public RuntimeValue evalNotEqual(RuntimeValue v, AspSyntax where) {
-
         if (v instanceof RuntimeNoneValue) {
-            return new RuntimeBoolValue(true);
+            return new RuntimeBoolValue(false);
         }
-        runtimeError("Type error for !=.", where);
+        if (v instanceof RuntimeDictionaryValue){
+            RuntimeDictionaryValue vDictValue = (RuntimeDictionaryValue)v;
+            if (!this.dictValue.equals(vDictValue.dictValue)){
+                return new RuntimeBoolValue(true);
+            }
+            return new RuntimeBoolValue(false);
+        }
+        runtimeError("Type error for ==.", where);
         return null; // Required by the compiler
     }
 
+    
+    @Override
+    public RuntimeValue evalNot(AspSyntax where) {
+        return new RuntimeDictionaryValue(Collections.emptyMap());
+    }
+    
     @Override
     public RuntimeValue evalAdd(RuntimeValue v, AspSyntax where){
-
+        if (v instanceof RuntimeNoneValue) {
+            return new RuntimeBoolValue(false);
+        }
         runtimeError("Type error for +.", where);
         return null;
     }

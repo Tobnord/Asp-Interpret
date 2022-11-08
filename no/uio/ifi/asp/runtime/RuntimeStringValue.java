@@ -47,7 +47,7 @@ public class RuntimeStringValue extends RuntimeValue {
 
     @Override
     public boolean getBoolValue(String what, AspSyntax where) {
-        return Boolean.parseBoolean(stringValue);
+        return !stringValue.isBlank();
     }
 
     @Override
@@ -66,6 +66,9 @@ public class RuntimeStringValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalEqual(RuntimeValue v, AspSyntax where) {
+        if(v instanceof RuntimeNoneValue){
+            return new RuntimeBoolValue(false);
+        }
         if(isRuntimeInstance(v)) {
             return new RuntimeBoolValue(this.stringValue == v.getStringValue("string", where));
         }
@@ -74,7 +77,10 @@ public class RuntimeStringValue extends RuntimeValue {
     }
 
     @Override
-    public RuntimeValue evalNotEqual(RuntimeValue v, AspSyntax where) {    
+    public RuntimeValue evalNotEqual(RuntimeValue v, AspSyntax where) {  
+        if(v instanceof RuntimeNoneValue){
+            return new RuntimeBoolValue(false);
+        }  
         if(isRuntimeInstance(v)) {
             return new RuntimeBoolValue(this.stringValue != v.getStringValue("string", where));
         }
@@ -107,5 +113,86 @@ public class RuntimeStringValue extends RuntimeValue {
 
         return bool;
     }
+
+    @Override
+    public RuntimeValue evalMultiply(RuntimeValue v, AspSyntax where){
+        if(isRuntimeInstance(v) && v instanceof RuntimeIntValue) {
+            String newString = this.stringValue;
+            String returnString = "";
+            for (int i = 1; i <= v.getIntValue("int", where); i++) {
+                returnString += newString;
+            }
+            this.stringValue = returnString;
+            return new RuntimeStringValue(this.stringValue);
+        }
+        
+        runtimeError("Type error for *.", where);
+        return null; // Required by the compiler
+    }
+
+
+    @Override
+    public RuntimeValue evalGreater(RuntimeValue v, AspSyntax where) {
+        if(v instanceof RuntimeNoneValue){
+            return new RuntimeBoolValue(false);
+        }
+        if(v instanceof RuntimeStringValue) {
+            int comparison = stringValue.compareTo(v.getStringValue("string", where));
+            if(comparison > 0){
+                return new RuntimeBoolValue(true);
+            }
+            return new RuntimeBoolValue(false);
+        }
+        runtimeError("Type error for >.", where);
+        return null; // Required by the compiler
+    }   
+
+    @Override
+    public RuntimeValue evalLess(RuntimeValue v, AspSyntax where) {
+        if(v instanceof RuntimeNoneValue){
+            return new RuntimeBoolValue(false);
+        }
+        if(v instanceof RuntimeStringValue) {
+            int comparison = stringValue.compareTo(v.getStringValue("string", where));
+            if(comparison < 0){
+                return new RuntimeBoolValue(true);
+            }
+            return new RuntimeBoolValue(false);
+        }
+        runtimeError("Type error for <.", where);
+        return null; // Required by the compiler
+    }   
+
+    @Override
+    public RuntimeValue evalGreaterEqual(RuntimeValue v, AspSyntax where) {
+        if(v instanceof RuntimeNoneValue){
+            return new RuntimeBoolValue(false);
+        }
+        if(v instanceof RuntimeStringValue) {
+            int comparison = stringValue.compareTo(v.getStringValue("string", where));
+            if(comparison > 0 || comparison == 0){
+                return new RuntimeBoolValue(true);
+            }
+            return new RuntimeBoolValue(false);
+        }
+        runtimeError("Type error for >=.", where);
+        return null; // Required by the compiler
+    }
+
+    @Override
+    public RuntimeValue evalLessEqual(RuntimeValue v, AspSyntax where) {
+        if(v instanceof RuntimeNoneValue){
+            return new RuntimeBoolValue(false);
+        }
+        if(v instanceof RuntimeStringValue) {
+            int comparison = stringValue.compareTo(v.getStringValue("string", where));
+            if(comparison < 0 || comparison == 0){
+                return new RuntimeBoolValue(true);
+            }
+            return new RuntimeBoolValue(false);
+        }
+        runtimeError("Type error for <=.", where);
+        return null; // Required by the compiler
+    }   
 }
 

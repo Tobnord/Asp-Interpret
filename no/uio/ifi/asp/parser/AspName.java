@@ -25,7 +25,7 @@ public class AspName extends AspAtom {
 
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        System.out.println("EVAL: Name");
+        //System.out.println("EVAL: Name");
         return null;
     }
 

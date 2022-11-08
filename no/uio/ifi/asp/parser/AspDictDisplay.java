@@ -65,7 +65,7 @@ public class AspDictDisplay extends AspAtom {
     
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        System.out.println("EVAL: Dict");
+        //System.out.println("EVAL: Dict");
         return new RuntimeDictionaryValue(dictDisplayHashMap);
     }
 }

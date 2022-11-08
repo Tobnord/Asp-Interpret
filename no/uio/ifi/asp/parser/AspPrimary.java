@@ -40,7 +40,7 @@ public class AspPrimary extends AspSyntax {
     
     @Override
     RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        System.out.println("EVAL: Primary");
+        //System.out.println("EVAL: Primary");
         
         RuntimeValue v = atomTest.eval(curScope);
         

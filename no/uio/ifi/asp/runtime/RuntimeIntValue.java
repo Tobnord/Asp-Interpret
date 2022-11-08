@@ -8,6 +8,9 @@ import no.uio.ifi.asp.parser.AspSyntax;
 public class RuntimeIntValue extends RuntimeValue {
     public long intValue;
 
+    public long tmpIntValue;
+    
+
     public RuntimeIntValue(long v) {
         intValue = v;
     }
@@ -34,7 +37,15 @@ public class RuntimeIntValue extends RuntimeValue {
 
     @Override
     public String getStringValue(String what, AspSyntax where) {
-        return (Long.toString(intValue));
+        return Long.toString(intValue);
+    }
+
+    @Override
+    public boolean getBoolValue(String what, AspSyntax where) {
+        if(intValue == 0){
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -65,6 +76,12 @@ public class RuntimeIntValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalDivide(RuntimeValue v, AspSyntax where){
+        if(v.getIntValue("long", where) == 0 || v.getIntValue("long", where) == -0){
+            return new RuntimeIntValue(0);
+        }
+        if (v instanceof RuntimeIntValue) {
+            return new RuntimeFloatValue(this.getFloatValue("float", where) / v.getFloatValue("float", where) );
+        }
         if (v instanceof RuntimeFloatValue) {
             return new RuntimeFloatValue(this.getFloatValue("float", where) / v.getIntValue("long", where) );
         }
@@ -75,6 +92,9 @@ public class RuntimeIntValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalIntDivide(RuntimeValue v, AspSyntax where){
+        if(v.getIntValue("long", where) == 0 || v.getIntValue("long", where) == -0){
+            return new RuntimeIntValue(0);
+        }
         if(v instanceof RuntimeIntValue) {
             return new RuntimeIntValue(this.intValue / v.getIntValue("long", where));
         }
@@ -85,6 +105,9 @@ public class RuntimeIntValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalMultiply(RuntimeValue v, AspSyntax where){
+        if(v.getIntValue("long", where) == 0 || v.getIntValue("long", where) == -0){
+            return new RuntimeIntValue(0);
+        }
         if(v instanceof RuntimeIntValue) {
             return new RuntimeIntValue(this.intValue * v.getIntValue("long", where));
         }
@@ -98,6 +121,9 @@ public class RuntimeIntValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalEqual(RuntimeValue v, AspSyntax where) {
+        if(v instanceof RuntimeNoneValue){
+            return new RuntimeBoolValue(false);
+        }
         if(v instanceof RuntimeIntValue) {
             return new RuntimeBoolValue(this.intValue == v.getIntValue("long", where));
         }
@@ -111,7 +137,9 @@ public class RuntimeIntValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalNotEqual(RuntimeValue v, AspSyntax where) {
-
+        if(v instanceof RuntimeNoneValue){
+            return new RuntimeBoolValue(false);
+        }
         if(v instanceof RuntimeIntValue) {
             return new RuntimeBoolValue(this.intValue != v.getIntValue("long", where));
         }
@@ -130,6 +158,9 @@ public class RuntimeIntValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalGreater(RuntimeValue v, AspSyntax where) {
+        if(v instanceof RuntimeNoneValue){
+            return new RuntimeBoolValue(false);
+        }
         if(v instanceof RuntimeIntValue) {
             return new RuntimeBoolValue(this.intValue > v.getIntValue("long", where));
         }
@@ -181,6 +212,9 @@ public class RuntimeIntValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalModulo(RuntimeValue v, AspSyntax where) {
+        if(v.getIntValue("long", where) == 0 || v.getIntValue("long", where) == -0){
+            return new RuntimeIntValue(0);
+        }
         if(v instanceof RuntimeIntValue) {
             return new RuntimeIntValue(this.intValue % v.getIntValue("long", where));
         }

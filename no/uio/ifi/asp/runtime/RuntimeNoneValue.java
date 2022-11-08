@@ -23,7 +23,10 @@ public class RuntimeNoneValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalEqual(RuntimeValue v, AspSyntax where) {
-        return new RuntimeBoolValue(v instanceof RuntimeNoneValue);
+        if (this.typeName() == v.typeName()) {
+            return new RuntimeBoolValue(true);
+        }
+        return new RuntimeBoolValue(false);
     }
 
     @Override

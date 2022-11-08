@@ -42,7 +42,7 @@ public class AspFactorPrefix extends AspSyntax {
     
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        System.out.println("EVAL: Factor prefix");
+        //System.out.println("EVAL: Factor prefix");
         return null;
     }
     

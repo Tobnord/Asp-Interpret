@@ -1,6 +1,7 @@
 package no.uio.ifi.asp.parser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import no.uio.ifi.asp.runtime.*;
 import no.uio.ifi.asp.scanner.*;
@@ -61,7 +62,12 @@ public class AspListDisplay extends AspAtom {
 
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
-        System.out.println("EVAL: List");
-        return new RuntimeListValue(expressionList);
+        //System.out.println("EVAL: List");
+        List<RuntimeValue> newList = new ArrayList<RuntimeValue>();        
+        
+        for (AspExpr expression : expressionList) {
+            newList.add(expression.eval(curScope));
+        }
+        return new RuntimeListValue(newList);
     }
 }
