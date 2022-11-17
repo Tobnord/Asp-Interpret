@@ -17,6 +17,25 @@ public class AspFactor extends AspSyntax {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        String returnString = "";
+        int counter = 0;
+        for (AspPrimary primary : primaryTests) {
+            
+            if (factorPrefixTests.get(counter) != null) {
+                returnString += factorPrefixTests.get(counter).toString();
+            }
+            returnString += primary.toString();
+            counter++;
+
+            if (counter < this.primaryTests.size()) {
+                returnString += factorOprTests.get(counter-1).toString();
+            }
+        }
+        return returnString;
+    }
+
     public static AspFactor parse(Scanner s) {
         enterParser("factor");
         AspFactor af = new AspFactor(s.curLineNum());

@@ -11,6 +11,11 @@ public class AspExprStmt extends AspSmallStmt {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        return expr.toString();
+    }
+
     static AspExprStmt parse(Scanner s) {
         enterParser("expr stmt");
         AspExprStmt aes = new AspExprStmt(s.curLineNum());

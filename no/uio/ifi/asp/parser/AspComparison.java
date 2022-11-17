@@ -14,6 +14,23 @@ public class AspComparison extends AspSyntax {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        String returnString = "";
+
+        int nPrinted = 0;
+        int counter = 0;
+        for (AspTerm at : termTests) {
+            if (nPrinted > 0)
+                returnString += this.CompOprTests.get(counter-1).toString();
+            returnString += at.toString();
+            ++nPrinted;
+            counter++;
+        }
+
+        return returnString;
+    }
+
     static AspComparison parse(Scanner s) {
         enterParser("comparison");
 

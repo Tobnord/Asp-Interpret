@@ -25,7 +25,12 @@ public class RuntimeListValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalNot(AspSyntax where) {
-        return new RuntimeListValue(new ArrayList<RuntimeValue>());
+        if (this.listValue.isEmpty()) {
+            return new RuntimeBoolValue(true);
+        }
+        else {
+            return new RuntimeBoolValue(false);
+        }
     }
 
     @Override

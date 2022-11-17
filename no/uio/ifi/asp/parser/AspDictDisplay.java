@@ -8,11 +8,16 @@ import no.uio.ifi.asp.scanner.*;
 import static no.uio.ifi.asp.scanner.TokenKind.*;
 public class AspDictDisplay extends AspAtom {
 
-    Map<AspStringLiteral, AspExpr> dictDisplayHashMap = new HashMap<AspStringLiteral, AspExpr>();
+    public Map<AspStringLiteral, AspExpr> dictDisplayHashMap = new HashMap<AspStringLiteral, AspExpr>();
         
 
     AspDictDisplay(int n) {
         super(n);
+    }
+
+    @Override
+    public String toString() {
+        return dictDisplayHashMap.toString();
     }
 
     static AspDictDisplay parse(Scanner s) {
@@ -47,7 +52,7 @@ public class AspDictDisplay extends AspAtom {
     }
 
     @Override
-    void prettyPrint(){
+    public void prettyPrint(){
         prettyWrite("{");
         int nPrinted = 0;
         for (Map.Entry<AspStringLiteral, AspExpr> entry : dictDisplayHashMap.entrySet()) {
@@ -66,6 +71,6 @@ public class AspDictDisplay extends AspAtom {
     @Override
     public RuntimeValue eval(RuntimeScope curScope) throws RuntimeReturnValue {
         //System.out.println("EVAL: Dict");
-        return new RuntimeDictionaryValue(dictDisplayHashMap);
+        return new RuntimeDictionaryValue(this);
     }
 }

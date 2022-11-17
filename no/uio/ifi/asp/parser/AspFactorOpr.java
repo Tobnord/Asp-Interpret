@@ -12,6 +12,14 @@ public class AspFactorOpr extends AspSyntax{
         super(n);
     }
 
+    @Override
+    public String toString() {
+        String returnString = "";
+        returnString += (this.kind.toString());
+        return returnString;
+    }
+    
+
     static AspFactorOpr parse(Scanner s) {
         AspFactorOpr afo = new AspFactorOpr(s.curLineNum());
 

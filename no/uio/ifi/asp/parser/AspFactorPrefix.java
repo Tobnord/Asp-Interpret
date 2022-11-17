@@ -12,6 +12,16 @@ public class AspFactorPrefix extends AspSyntax {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        if(isPlusToken) {
+            return("+");
+        }
+        else {
+            return("-");
+        }
+    }
+
 
     static AspFactorPrefix parse(Scanner s) {
         enterParser("factor prefix");

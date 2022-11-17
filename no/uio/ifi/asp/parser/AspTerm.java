@@ -13,6 +13,23 @@ public class AspTerm extends AspSyntax{
         super(n);
     }
 
+    @Override
+    public String toString() {
+        String returnString = "";
+        int counter = 0;
+        for (AspFactor factor : factorTests) {
+            returnString += factor.toString();
+            
+            if (counter < this.termOprTests.size()) {
+               
+                returnString += this.termOprTests.get(counter).toString();
+            }
+            counter++;
+        }
+
+        return returnString;
+    }
+
     static AspTerm parse(Scanner s) {
         enterParser("term");
 

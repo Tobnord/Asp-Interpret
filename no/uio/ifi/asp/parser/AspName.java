@@ -9,6 +9,11 @@ public class AspName extends AspAtom {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        return nameString;
+    }
+
     static AspName parse(Scanner s) {
         enterParser("name");
         AspName an = new AspName(s.curLineNum());

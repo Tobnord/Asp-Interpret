@@ -11,6 +11,19 @@ public class AspStringLiteral extends AspAtom {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        if (this.stringLiteral.contains("\"")) {
+            return("\'" + this.stringLiteral + "\'");
+        }
+        else if (this.stringLiteral.contains("\'")) {
+            return("\"" + this.stringLiteral + "\"");
+        }
+        else {
+            return("\"" + this.stringLiteral + "\"");
+        }
+    }
+
     static AspStringLiteral parse(Scanner s) {
         enterParser("string literal");
         AspStringLiteral asl = new AspStringLiteral(s.curLineNum());

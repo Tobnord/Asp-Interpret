@@ -11,6 +11,16 @@ public class AspExpr extends AspSyntax {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        String returnString = "";
+
+        for (AspAndTest aspAndTest : andTests) {
+            returnString += aspAndTest.toString();
+        }
+        return returnString;
+    }
+
     public static AspExpr parse(Scanner s) {
         enterParser("expr");
         AspExpr ae = new AspExpr(s.curLineNum());

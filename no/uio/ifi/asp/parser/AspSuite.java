@@ -13,6 +13,20 @@ public class AspSuite extends AspSyntax {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        String returnString = "";
+        if (stmtTests.size() == 0) {
+            returnString += smallStmtList.toString();
+        }
+        else{
+            for (AspStmt stmt : stmtTests) {
+                returnString += stmt.toString();
+            }
+        }
+        return returnString;
+    }
+
     static AspSuite parse(Scanner s) {
         enterParser("Suite");
         AspSuite as = new AspSuite(s.curLineNum());
