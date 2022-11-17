@@ -11,6 +11,15 @@ class AspAndTest extends AspSyntax {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        String returnString = "";
+        for (AspNotTest aspNotTest : notTests) {
+            returnString += aspNotTest.toString();
+        }
+        return returnString;
+    }
+
     static AspAndTest parse(Scanner s) {
         enterParser("and test");
         AspAndTest aat = new AspAndTest(s.curLineNum());

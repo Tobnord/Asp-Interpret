@@ -16,6 +16,11 @@ public class AspNoneLiteral extends AspAtom {
         leaveParser("none literal");
         return anl;
     }
+
+    @Override
+    public String toString() {
+        return "None";
+    }
     
     @Override
     void prettyPrint(){

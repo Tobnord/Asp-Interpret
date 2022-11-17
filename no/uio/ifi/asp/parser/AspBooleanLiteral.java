@@ -10,6 +10,11 @@ public class AspBooleanLiteral extends AspAtom {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        return ""+booleanLiteral;
+    }
+
     static AspBooleanLiteral parse(Scanner s) {
         enterParser("boolean literal");
         AspBooleanLiteral abl = new AspBooleanLiteral(s.curLineNum());

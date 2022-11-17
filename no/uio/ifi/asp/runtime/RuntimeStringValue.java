@@ -52,9 +52,13 @@ public class RuntimeStringValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalNot(AspSyntax where) {
-        return new RuntimeStringValue("");
+        if (this.stringValue.isEmpty()) {
+            return new RuntimeBoolValue(true);
+        }
+        else {
+            return new RuntimeBoolValue(false);
+        }
     }
-
     @Override
     public RuntimeValue evalAdd(RuntimeValue v, AspSyntax where){
         if(isRuntimeInstance(v)) {
@@ -122,8 +126,7 @@ public class RuntimeStringValue extends RuntimeValue {
             for (int i = 1; i <= v.getIntValue("int", where); i++) {
                 returnString += newString;
             }
-            this.stringValue = returnString;
-            return new RuntimeStringValue(this.stringValue);
+            return new RuntimeStringValue(returnString);
         }
         
         runtimeError("Type error for *.", where);

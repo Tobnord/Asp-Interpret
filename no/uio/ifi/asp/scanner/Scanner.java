@@ -311,10 +311,12 @@ public class Scanner {
 
 		for (int i = startIndex + 1; i < chars.length; i++) {
 			if (!isDigit(chars[i]) && chars[i] != '.') {
-				Token token = new Token(integerToken, curLineNum());
+				Token token;
 				if (digitString.contains(".")) {
-					token.floatLit = Float.parseFloat(digitString);
+					token = new Token(floatToken, curLineNum());
+					token.floatLit = Double.parseDouble(digitString);
 				} else {
+					token = new Token(integerToken, curLineNum());
 					token.integerLit = Integer.parseInt(digitString);
 				}
 				curLineTokens.add(token);
@@ -329,10 +331,12 @@ public class Scanner {
 
 		// Handles digits at the end of the line
 		if (!digitString.isBlank()) {
-			Token token = new Token(integerToken, curLineNum());
+			Token token;
 			if (digitString.contains(".")) {
-				token.floatLit = Float.parseFloat(digitString);
+				token = new Token(floatToken, curLineNum());
+				token.floatLit = Double.parseDouble(digitString);
 			} else {
+				token = new Token(integerToken, curLineNum());
 				token.integerLit = Integer.parseInt(digitString);
 			}
 			curLineTokens.add(token);

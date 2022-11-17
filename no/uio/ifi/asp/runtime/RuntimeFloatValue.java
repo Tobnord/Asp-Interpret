@@ -12,7 +12,7 @@ public class RuntimeFloatValue extends RuntimeValue {
 
     @Override
     String typeName() {
-        return "boolean";
+        return "float";
     }
     
     @Override
@@ -26,6 +26,11 @@ public class RuntimeFloatValue extends RuntimeValue {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public double getFloatValue(String what, AspSyntax where) {
+        return floatValue;
     }
 
     @Override
@@ -55,6 +60,22 @@ public class RuntimeFloatValue extends RuntimeValue {
         }
 
         runtimeError("Type error for /.", where);
+        return null; // Required by the compiler
+    }
+
+    @Override
+    public RuntimeValue evalIntDivide(RuntimeValue v, AspSyntax where){
+        if(v.getIntValue("long", where) == 0 || v.getIntValue("long", where) == -0) {
+            return new RuntimeIntValue(0);
+        }
+        if(v instanceof RuntimeIntValue) {
+            return new RuntimeFloatValue(Math.floor(this.floatValue / v.getIntValue("long", where)));
+        }
+        else if (v instanceof RuntimeFloatValue) {
+            return new RuntimeFloatValue(Math.floor(this.floatValue / v.getFloatValue("long", where)));
+        }
+
+        runtimeError("Type error for int/.", where);
         return null; // Required by the compiler
     }
 
@@ -91,7 +112,12 @@ public class RuntimeFloatValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalNot(AspSyntax where) {
-        return new RuntimeFloatValue(0.0);
+        if (this.floatValue == 0) {
+            return new RuntimeBoolValue(true);
+        }
+        else {
+            return new RuntimeBoolValue(false);
+        }
     }
 
     @Override
@@ -138,7 +164,7 @@ public class RuntimeFloatValue extends RuntimeValue {
     @Override
     public RuntimeValue evalModulo(RuntimeValue v, AspSyntax where) {
         if(v instanceof RuntimeIntValue || v instanceof RuntimeFloatValue) {
-            return new RuntimeFloatValue(this.floatValue % v.getFloatValue("float", where));
+            return new RuntimeFloatValue(this.floatValue - v.getFloatValue("float", where) * Math.floor(this.floatValue / v.getFloatValue("float", where)));
         }
 
         runtimeError("Type error for %.", where);
@@ -147,7 +173,7 @@ public class RuntimeFloatValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalNegate(AspSyntax where) {
-        return new RuntimeFloatValue(floatValue *-1);
+        return new RuntimeFloatValue(floatValue * - 1);
     }
 
     public RuntimeValue evalPositive(AspSyntax where) {

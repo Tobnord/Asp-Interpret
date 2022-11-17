@@ -12,6 +12,16 @@ public class AspTermOpr extends AspSyntax {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        if(this.isPlusToken) {
+            return "+";
+        }
+        else {
+            return "-";
+        }
+    }
+
     static AspTermOpr parse(Scanner s) {
         enterParser("term opr");
         AspTermOpr ato = new AspTermOpr(s.curLineNum());

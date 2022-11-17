@@ -1,15 +1,17 @@
 package no.uio.ifi.asp.runtime;
 
-import java.util.Collections;
-import java.util.Map;
-
+import no.uio.ifi.asp.parser.AspDictDisplay;
 import no.uio.ifi.asp.parser.AspSyntax;
 
+import java.util.HashMap;
 
-public class RuntimeDictionaryValue extends RuntimeValue{
-    Map dictValue;
+import no.uio.ifi.asp.parser.*;
 
-    public RuntimeDictionaryValue(Map v) {
+
+public class RuntimeDictionaryValue extends RuntimeValue {
+    AspDictDisplay dictValue;
+
+    public RuntimeDictionaryValue(AspDictDisplay v) {
         dictValue = v;
     }
 
@@ -25,8 +27,12 @@ public class RuntimeDictionaryValue extends RuntimeValue{
 
     @Override
     public boolean getBoolValue(String what, AspSyntax where) {
-        runtimeError("Type error: " + what + " is not a Boolean!", where);
-        return false; // Required by the compiler!
+        if (dictValue.dictDisplayHashMap.isEmpty()) {
+            return false;
+        }
+        else{
+            return true;
+        }
     }
     
 
@@ -66,7 +72,12 @@ public class RuntimeDictionaryValue extends RuntimeValue{
     
     @Override
     public RuntimeValue evalNot(AspSyntax where) {
-        return new RuntimeDictionaryValue(Collections.emptyMap());
+        if (this.dictValue.dictDisplayHashMap.isEmpty()) {
+            return new RuntimeBoolValue(true);
+        }
+        else {
+            return new RuntimeBoolValue(false);
+        }
     }
     
     @Override

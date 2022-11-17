@@ -92,11 +92,14 @@ public class RuntimeIntValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalIntDivide(RuntimeValue v, AspSyntax where){
-        if(v.getIntValue("long", where) == 0 || v.getIntValue("long", where) == -0){
+        if(v.getIntValue("long", where) == 0 || v.getIntValue("long", where) == -0) {
             return new RuntimeIntValue(0);
         }
         if(v instanceof RuntimeIntValue) {
-            return new RuntimeIntValue(this.intValue / v.getIntValue("long", where));
+            return new RuntimeIntValue(Math.floorDiv(this.intValue, v.getIntValue("long", where)));
+        }
+        else if (v instanceof RuntimeFloatValue) {
+            return new RuntimeFloatValue(Math.floor(this.intValue / v.getFloatValue("long", where)));
         }
 
         runtimeError("Type error for int/.", where);
@@ -153,7 +156,12 @@ public class RuntimeIntValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalNot(AspSyntax where) {
-        return new RuntimeIntValue(0);
+        if (this.intValue == 0) {
+            return new RuntimeBoolValue(true);
+        }
+        else {
+            return new RuntimeBoolValue(false);
+        }
     }
 
     @Override
@@ -216,10 +224,10 @@ public class RuntimeIntValue extends RuntimeValue {
             return new RuntimeIntValue(0);
         }
         if(v instanceof RuntimeIntValue) {
-            return new RuntimeIntValue(this.intValue % v.getIntValue("long", where));
+            return new RuntimeIntValue(Math.floorMod(this.intValue, v.getIntValue("long", where)));
         }
         else if (v instanceof RuntimeFloatValue) {
-            return new RuntimeFloatValue(this.intValue % v.getFloatValue("float", where));
+            return new RuntimeFloatValue(this.intValue - v.getFloatValue("float", where) * Math.floor(this.intValue / v.getFloatValue("float", where)));
         }
 
         runtimeError("Type error for %.", where);
@@ -228,7 +236,7 @@ public class RuntimeIntValue extends RuntimeValue {
 
     @Override
     public RuntimeValue evalNegate(AspSyntax where) {
-        return new RuntimeIntValue(intValue *-1);
+        return new RuntimeIntValue(intValue * -1);
     }
 
     public RuntimeValue evalPositive(AspSyntax where) {
@@ -237,7 +245,7 @@ public class RuntimeIntValue extends RuntimeValue {
             return new RuntimeIntValue(intValue);
         }
         else if(intValue < 0){
-            return new RuntimeIntValue(intValue *-1);
+            return new RuntimeIntValue(intValue * -1);
         }
         
         runtimeError("Unary '+' undefined for " + typeName() + "!", where);

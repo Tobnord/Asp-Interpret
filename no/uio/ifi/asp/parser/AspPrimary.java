@@ -12,6 +12,16 @@ public class AspPrimary extends AspSyntax {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        String returnString = "";
+        returnString += this.atomTest.toString();
+        for (AspPrimarySuffix aspPrimarySuffix : this.primarySuffixTests) {
+            returnString += aspPrimarySuffix.toString();
+        }
+        return returnString;
+    }
+
     public static AspPrimary parse(Scanner s) {
         enterParser("primary");
         AspPrimary ap = new AspPrimary(s.curLineNum());

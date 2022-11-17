@@ -12,6 +12,18 @@ public class AspNotTest extends AspSyntax {
         super(n);
     }
 
+    @Override
+    public String toString() {
+        String returnString = "";
+
+        if (withNot) {
+            returnString += "not";
+        }
+        returnString += comparison.toString();
+
+        return returnString;
+    }
+
     static AspNotTest parse(Scanner s) {
         enterParser("not test");
         AspNotTest ant = new AspNotTest(s.curLineNum());
